@@ -200,3 +200,20 @@ module.exports.verifyEmail = async (req, res, next) => {
         next(e);
     }
 };
+// Schedule a job to run every hour (at the beginning of each hour)
+cron.schedule('0 * * * *', async () => {
+    const twentyFourHoursAgo = new Date();
+    twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+    try {
+        // Find and delete users who are not verified and were created more than 24 hours ago
+        const deletedUsers = await User.deleteMany({
+            isVerified: false,
+            createdAt: { $lt: twentyFourHoursAgo },
+        });
+        if (deletedUsers.deletedCount > 0) {
+            console.log(`${deletedUsers.deletedCount} unverified users deleted.`);
+        }
+    } catch (error) {
+        console.error('Error deleting unverified users:', error);
+    }
+});
