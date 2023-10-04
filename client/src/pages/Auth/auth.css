@@ -1,0 +1,139 @@
+.auth_container {
+    height: 100vh;
+    background-image: url("../../assets/background_auth.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.auth_container.forgot_pass_container .form,
+.auth_container.login_auth_container .form,
+.auth_container.reset_pass_container .form{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.auth_container.login_auth_container .form,
+.auth_container.reset_pass_container .form{
+  max-width: 400px;
+}
+.auth_container.forgot_pass_container .form{
+  max-width: 350px;
+  min-height: 300px;
+}
+.auth_container.reset_pass_container .form{
+  min-height: 350px;
+}
+
+.forgot_pass_container h2,
+.reset_pass_container h2{
+  color: #fff;
+  width: 100%;
+}
+.form .welcome{
+    color: #fff;
+}
+.form .welcome p:first-child{
+  font-size: 25px;
+}
+.form{
+    position: relative;
+    width: 90%;
+    min-height: 454px;
+    background: #343438;
+    max-width: 500px;
+    padding: 30px 20px;
+}
+.form input[type="file"]:hover ~ .plus{
+    opacity: 1;
+  }
+.form .notSelected{
+  opacity: 1 !important;
+}
+.form .grid{
+  display: flex;
+  column-gap: 20px;
+  row-gap: 15px;
+  flex-wrap: wrap;
+}
+.form .grid .input {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: calc(100% / 2 - 10px);
+}
+.form .grid .input_full {
+  width: calc(100% / 1);
+}
+.form .grid .input input{
+  outline: none;
+  height: 40px;
+  padding: 0 20px;
+  border: 2px solid transparent;
+}
+.form .input input:focus, .input input:valid{
+  border: 2px solid #4cc731;
+}
+.form .input label{
+  color: #fff;
+  width: max-content;
+}
+.form button{
+  margin-top: 15px;
+  background: #4cc731;
+  color: #fff;
+  border: 0;
+  padding: 10px;
+  width: 100%;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.form .error, .verify_dev .error{
+  margin-top: 10px;
+  color: red;
+}
+.form .success, .verify_dev .success{
+  margin-top: 10px;
+  color: #4cc731;
+}
+.gender_input .gender_dev{
+  display: flex;
+  gap: 20px;
+}
+.gender_input .Select_gender{
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 0 10px;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.gender_input .Select_gender:last-child{
+  flex: 1.5;
+}
+.gender_input span{
+  color: #000;
+}
+.form .redirect{
+  color: #fff;
+}
+.form a{
+  text-decoration: none;
+  color: #4cc731;
+}
+.auth_container .verify_dev{
+  position: relative;
+  width: 90%;
+  /* min-height: 454px; */
+  background: #343438;
+  max-width: 500px;
+  padding: 30px 20px;
+}
+@media screen and (max-width: 544px) {
+ .form .grid .input {
+    width: calc(100% / 1);
+  }
+}
