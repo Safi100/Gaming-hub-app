@@ -6,7 +6,7 @@ import AuthLoading from '../../components/loading/AuthLoading';
 const Register = () => {
     const [loading, setloading] = useState(false)
     const [error, setError] = useState('')
-    const [success, setSuccess] = useState(false)
+    const [message, setMessage] = useState('')
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
@@ -27,7 +27,7 @@ const Register = () => {
     const handleRegisterForm = (e) => {
         e.preventDefault()
         setError('')
-        setSuccess(false)
+        setMessage('')
         const emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
         const full_name_Pattern = /^[A-Za-z\s]+$/u
 
@@ -53,11 +53,11 @@ const Register = () => {
         }
         setloading(true);
         Axios.post('http://localhost:8000/api/auth/register', formData)
-        .then(() => {
+        .then((res) => {
             setloading(false)
             e.target.reset();
             setFormData({ first_name: '', last_name: '', email: '', gender: '', password: '', confirmPassword: '', gender: null});
-            setSuccess(true)
+            setMessage(res.data.message)
         })
         .catch(err => {
             setloading(false)
@@ -108,7 +108,7 @@ const Register = () => {
                     </div>
                 </div>
                 {error && <p className='error'>{error}</p>}
-                {success && <p className='success'>Thank you for registering! Your registration was successful. You can now log in with your credentials.</p>}
+                {message && <p className='success'>{message}</p>}
                 <button>Create Account</button>
                 <p className='redirect'>Already have an account?<a href="/login"> Login</a></p>
             </form>
