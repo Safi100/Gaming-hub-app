@@ -44,11 +44,15 @@ module.exports.Register =  async (req, res, next) => {
             gender
         }).save()
         .then(async (user) => {
+            // generate a random token and hash it for DB 
+            const verifyToken = crypto.randomBytes(32).toString("hex");
+            const hashedToken = await bcrypt.hash(verifyToken, 10)
             const token = await new EmailToken({
                 userId: user._id,
-                token: crypto.randomBytes(32).toString("hex"),
+                token: hashedToken,
             }).save();
-            const url = `${process.env.BASE_URL}/users/${user.id}/verify/${token.token}`;
+            // send email to the user
+            const url = `${process.env.BASE_URL}/verify-email/${user.id}/${verifyToken}`;
             await sendEmail(user.email, "Verify Your Email Address", `
             <p>Dear User,</p>
             <p>Thank you for registering. To complete your registration and activate your account, please verify your email address by clicking the link below:</p>
@@ -83,11 +87,14 @@ module.exports.Login = async (req, res, next) => {
         if(!user.isVerified) {
             let token = await EmailToken.findOne({ userId: user._id });
 			if (!token) {
+                const verifyToken = crypto.randomBytes(32).toString("hex");
+                const hashedToken = await bcrypt.hash(verifyToken, 10)
 				token = await new EmailToken({
 					userId: user._id,
-					token: crypto.randomBytes(32).toString("hex"),
+					token: hashedToken,
 				}).save();
-                const url = `${process.env.BASE_URL}/users/${user.id}/verify/${token.token}`;
+                // send email to the user
+                const url = `${process.env.BASE_URL}/verify-email/${user.id}/${verifyToken}`;
                 await sendEmail(user.email, "Verify Your Email Address", `
                 <p>Dear User,</p>
                 <p>Thank you for registering. To complete your registration and activate your account, please verify your email address by clicking the link below:</p>
@@ -104,9 +111,10 @@ module.exports.Login = async (req, res, next) => {
         }
         // login successful
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-        const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
+        // const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
+        const expiryDate = new Date(Date.now() + 10000); // 7 days in milliseconds
         const { password, ...userData } = user.toObject();
-        res.cookie('access_token', token, { httpOnly: true, expires: expiryDate }).status(200).json(userData);
+        res.cookie('access_token', token, { httpOnly: true, expires: expiryDate }).status(200).json({...userData, token});
     }catch(e){
         next(e)
     }
@@ -123,12 +131,14 @@ module.exports.forgotPassword = async (req, res, next) => {
         // delete all previous tokens before initializing new one
         await PasswordToken.deleteMany({ userId: user._id});
         // generate new token
+        const NewPasswordToken = crypto.randomBytes(32).toString("hex");
+        const hashedToken = await bcrypt.hash(NewPasswordToken, 10);
         const token = await new PasswordToken({
             userId: user._id,
-            token: crypto.randomBytes(32).toString("hex"),
+            token: hashedToken,
         }).save();
         // send email to user
-        const url = `${process.env.BASE_URL}/reset-password/${user._id}/${token.token}`
+        const url = `${process.env.BASE_URL}/reset-password/${user._id}/${NewPasswordToken}`
         const emailSent = await sendEmail(user.email, 'Forgot your password', `
         <p>Dear User,</p>
         <p>We have received a request to reset your password. To complete the password reset process, please follow the instructions below:</p>
@@ -163,9 +173,11 @@ module.exports.resetPassword = async (req, res, next) => {
         }
         const user = await User.findById(userID);
         if(!user) throw new HandleError(`Invalid link`, 400)
-        const ValidToken = await PasswordToken.findOne({ userId: userID, token });
-        if (!ValidToken) throw new HandleError(`Invalid link`, 400);
-        // password validation 
+        const PasswordResetToken = await PasswordToken.findOne({ userId: userID });
+        if (!PasswordResetToken) throw new HandleError(`Invalid link`, 400);
+        const match = await bcrypt.compare(token, PasswordResetToken.token);
+        if(!match) throw new HandleError(`Invalid link`, 400);
+        // password validation
         if (password.length < 6) throw new HandleError(`Password must be at least 6 characters.`, 400);
         if (password !== confirmPassword) throw new HandleError(`Password and confirm password must match.`, 400);
         // hash password
@@ -173,7 +185,7 @@ module.exports.resetPassword = async (req, res, next) => {
         const updatedUser = await User.findByIdAndUpdate({_id: userID}, {password: hashedPass})
         if(!updatedUser) throw new HandleError(`Password didn't update.`, 400);
         // delete token after using it
-        await PasswordToken.deleteOne({ userId: userID, token });
+        await PasswordToken.deleteOne({ userId: userID });
         res.send({message: 'Password changed successfully'});
     }catch(e){
         console.log(e);
@@ -189,12 +201,17 @@ module.exports.verifyEmail = async (req, res, next) => {
         } catch (error) {
             throw new HandleError(`Invalid link`, 400);
         }
+        // handle error if user already verified and token is not valid
         const user = await User.findById(userID);
         if (!user || user.isVerified) throw new HandleError(user ? `Email already verified` : `Invalid link`, 400);
-        const ValidToken = await EmailToken.findOne({ userId: userID, token });
-        if (!ValidToken) throw new HandleError(`Invalid link`, 400);
+        const EmailVerifyToken = await EmailToken.findOne({ userId: userID });
+        if (!EmailVerifyToken) throw new HandleError(`Invalid link`, 400);
+        const match = await bcrypt.compare(token, EmailVerifyToken.token);
+        if(!match) throw new HandleError(`Invalid link`, 400);
+        // set user to verified
         await User.updateOne({ _id: user._id }, { isVerified: true });
-        await EmailToken.deleteOne({ userId: userID, token });
+        // delete email verification token after use it
+        await EmailToken.deleteOne({ userId: userID });
         res.status(200).send({ message: 'Email verified successfully.' });
     } catch (e) {
         next(e);
