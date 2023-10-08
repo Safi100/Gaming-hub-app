@@ -111,8 +111,7 @@ module.exports.Login = async (req, res, next) => {
         }
         // login successful
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-        // const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
-        const expiryDate = new Date(Date.now() + 10000); // 7 days in milliseconds
+        const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
         const { password, ...userData } = user.toObject();
         res.cookie('access_token', token, { httpOnly: true, expires: expiryDate }).status(200).json({...userData, token});
     }catch(e){
@@ -217,6 +216,14 @@ module.exports.verifyEmail = async (req, res, next) => {
         next(e);
     }
 };
+module.exports.Logout = async (req, res, next) => {
+    try{
+        await res.clearCookie('access_token');
+        res.status(200).send({success: true})
+    }catch (e) {
+        next(e);
+    }
+}
 // Schedule a job to run every hour (at the beginning of each hour)
 cron.schedule('0 * * * *', async () => {
     const twentyFourHoursAgo = new Date();
