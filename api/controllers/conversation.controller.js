@@ -36,3 +36,23 @@ module.exports.Conversation_List = async (req, res, next) => {
     });
     res.status(200).json(conversations);
 }
+module.exports.create_or_fetch_private_conversation = async (req, res, next) => {
+    const receiverUserId = req.body.receiverUserId.trim(); // The ID of the user selected for conversation
+    const ConversationisExist = await Conversation.findOne({
+        type: 'private',
+        participants: { $all: [req.user.id, receiverUserId] },
+    }).populate({path: 'messages', populate: { path:'sender', select: '-password' }})
+    if(ConversationisExist) {
+        // set unreadMessage by current user to zero after fetch conversation
+        ConversationisExist.unreadCount[req.user.id] = 0;
+        ConversationisExist.markModified('unreadCount'); // Mark the field as modified
+        await ConversationisExist.save();
+        return res.send(ConversationisExist);
+    }
+    const newConversation = await new Conversation({
+        type: 'private',
+        participants: [req.user.id, receiverUserId],
+        unreadCount: { [req.user.id]: 0, [receiverUserId]: 0 }, // Initialize unread counts
+    }).save()
+    res.status(200).json(newConversation)
+}
