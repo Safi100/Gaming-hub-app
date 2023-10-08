@@ -56,3 +56,23 @@ module.exports.create_or_fetch_private_conversation = async (req, res, next) => 
     }).save()
     res.status(200).json(newConversation)
 }
+module.exports.sendMessage = async (req, res, next) => {
+    const conversationID = req.params.conversationID
+    try{
+        const conversation = await Conversation.findOne({
+            _id: conversationID,
+            participants: { $in: [req.user.id] },
+        })
+        if(!conversation) throw new HandleError(`Conversation not found`, 404)
+        const EncryptContent = CryptoJS.AES.encrypt(req.body.content.trim(), process.env.CRYPTO_KEY)
+        const newMessage = await new Message({
+            sender: req.user.id,
+            content: EncryptContent,
+        }).save()
+        conversation.messages.push(newMessage)
+        await conversation.save();
+        res.status(200).json(newMessage)
+    }catch(e){
+        next(e);
+    }
+}
