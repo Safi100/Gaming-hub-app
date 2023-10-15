@@ -29,7 +29,7 @@ module.exports.Register =  async (req, res, next) => {
         if (!emailPattern.test(email)) throw new HandleError(`Invalid email address.`, 400);
         if (password.length < 6) throw new HandleError(`Password must be at least 6 characters.`, 400);
         if (password !== confirmPassword) throw new HandleError(`Password and confirm password must match.`, 400);
-    
+        
         const emailUsedBefore = await User.findOne({ email })
         if(emailUsedBefore) throw new HandleError(`Email already used by another user`, 400);
         
@@ -41,7 +41,7 @@ module.exports.Register =  async (req, res, next) => {
             last_name,
             email,
             password: hashedPass,
-            gender
+            gender,
         }).save()
         .then(async (user) => {
             // generate a random token and hash it for DB 
@@ -65,6 +65,7 @@ module.exports.Register =  async (req, res, next) => {
             res.status(200).json({success: true, message: 'Registration successful! An email has been sent to verify your email address. Please check your inbox (including the spam folder) to complete the registration process.'});
         })
     }catch(e){
+        console.log(e);
         next(e)
     }
 }
@@ -113,6 +114,7 @@ module.exports.Login = async (req, res, next) => {
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
         const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
         const { password, ...userData } = user.toObject();
+        res.cookie('c_user', user._id.toString(), { expires: expiryDate });
         res.cookie('access_token', token, { httpOnly: true, expires: expiryDate }).status(200).json({...userData, token});
     }catch(e){
         next(e)
