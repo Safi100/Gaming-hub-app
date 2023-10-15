@@ -2,6 +2,14 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
+    avatar: {
+        url: {
+            type: String,
+        },
+        filename: {
+            type: String,
+        }
+    },
     first_name: {
         type: String,
         required: [true, "Last Name is required"]
