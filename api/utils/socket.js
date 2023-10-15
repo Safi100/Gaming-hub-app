@@ -12,13 +12,13 @@ module.exports = function (server) {
 
   io.on('connection', (socket) => {
     console.log(`Client connected: ${socket.id}`);
+    // Other socket.io event handlers...
 
     socket.on('disconnect', () => {
       console.log(`Client disconnected: ${socket.id}`);
     });
-
-    // Other socket.io event handlers...
+    
+    // Return the updated 'io' instance
+    return io;
   });
-
-  return io;
 };
