@@ -1,5 +1,6 @@
 .chat_bg{
     height: 100vh;
+    position: relative;
     background-image: url("../../assets/background_auth.png");
     background-size: cover;
     background-position: center;
@@ -16,22 +17,67 @@
     display: flex;
     min-height: 616px;
 }
+/* left list */
 .chat_container .side_list{
     padding: 20px;
     max-width: 300px;
-    /* border-right: 1px solid #fff; */
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
 }
+/* search conversation */
 .side_list .search{
+    position: relative;
     display: flex;
     background: #3a3b3c;
     border-radius: 20px;
-    overflow: hidden;
     align-items: center;
     padding-left: 10px;
     margin-bottom: 40px;
     color: #fff;
+}
+.search .search_results{
+    position: absolute;
+    overflow-y: auto;
+    min-height: 200px;
+    max-height: 250px;
+    width: 100%;
+    border-radius: 10px;
+    background: #18191a;
+    top: 120%;
+    left: 0;
+    z-index: 555;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.search_results .search_result{
+    background: #242526;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.search_results.no_result{
+    justify-content: center;
+}
+.search_result .info{
+    overflow: hidden;
+}
+.info p{
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.info .email{
+    font-size: 12px;
+}
+.search_results h2{
+    width: 100%;
+    text-align: center;
 }
 .search input{
     background: transparent;
@@ -41,13 +87,26 @@
     padding: 10px;
     color: inherit;
 }
+/* conversation list */
 .conversations{
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    flex: 1;
+    gap: 10px;
+    height: 420px;
     overflow-y: auto;
-    height: 100%;
+}
+.conversations::-webkit-scrollbar {
+    width: 5px;              /* width of the entire scrollbar */
+}
+  
+.conversations::-webkit-scrollbar-track {
+    background: #00000042;        /* color of the tracking area */
+}
+  
+.conversations::-webkit-scrollbar-thumb {
+    background-color: #025c4c;    /* color of the scroll thumb */
+    border-radius: 20px;       /* roundness of the scroll thumb */
+    border: 1px solid #18191a;  /* creates padding around scroll thumb */
 }
 .conversation{
     color: #fff;
@@ -87,18 +146,17 @@
     gap: 10px;
 }
  .last_message{
-    max-width:  200px;
+    max-width:  110px;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    -webkit-line-clamp: 1;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
     
 }
 .conversation .name_time{
     display: flex;
     justify-content: space-between;
 }
+/* conversation chat box */
 .chat_container .chat_box{
     width: 100%;
     background: #18191a;
@@ -120,10 +178,10 @@
     display: flex;
     gap: 10px;
 }
-.chat_box_header .admin{
+.admin{
     background: rgb(74, 74, 74);
-    border-radius: 3px;
-    font-size: 14px;
+    border-radius: 5px;
+    font-size: 12px;
     padding: 2px 5px;
 }
 .chat_box .no-chat{
@@ -134,6 +192,7 @@
     top:50%;
     transform: translate(-50%, -50%);
 }
+/* messages */
 .messages{
     display: flex;
     flex-direction: column;
@@ -147,9 +206,13 @@
     border-radius: 5px;
     padding: 10px;
 }
-.s, .r{
+.message p{
+    overflow-wrap: break-word;
+}
+.s, .r, .system{
     width: 100%;
     display: flex;
+    gap: 10px;
 }
 .r{
     justify-content: flex-end;
@@ -159,6 +222,25 @@
 }
 .r .message{
     background: rgb(74, 74, 74);
+}
+.system{
+    justify-content: center;
+}
+.system .message{
+    background: gray;
+    max-width: max-content;
+    font-size: 14px;
+    padding: 3px 10px;
+}
+.message .sender_name{
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: 10px;
+}
+.message .message_date{
+    margin-top: 15px;
+    font-size: 12px;
 }
 .message_input{
     display: flex;
@@ -186,4 +268,54 @@
     background: transparent;
     border: 0;
     cursor: pointer;
+}
+/* create group form */
+.chat_bg .blur{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.575);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.newGroupForm{
+    width: 100%;
+    /* min-height: 250px; */
+    max-width: 300px;
+    background: #242526;
+    color: #fff;
+    padding: 20px;
+}
+.newGroupForm .close_div{
+    display: flex;
+    justify-content: space-between;
+}
+.close_div span{
+    cursor: pointer;
+}
+.newGroupForm .input_text{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+.input_text input{
+    padding: 10px 10px;
+    border: 0;
+    outline: 0;
+    background: #3a3b3c;
+    border-radius: 5px;
+    color: inherit;
+}
+.createGroupBtn{
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #3a3b3c;
+    color: #fff;
+    border: 0;
 }
