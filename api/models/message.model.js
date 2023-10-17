@@ -11,7 +11,10 @@ const messageSchema = new Schema({
       type: String,
       default: null,
     }, // Content could be the text description of the message.
-    imageUrl: String, // URL to the image file, if applicable.
+    isFromSystem: {
+      type: Boolean,
+      default: false
+    },
     timestamp: {
       type: Date,
       default: Date.now,
