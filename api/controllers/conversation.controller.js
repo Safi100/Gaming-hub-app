@@ -70,8 +70,28 @@ module.exports.addUserToGroup = async (req, res, next) => {
     }
 }
 module.exports.removeUserFromGroup = async (req, res, next) => {
-
+    try{
+        const {userId, groupId} = req.params;
+        // check id validity
+        if (!mongoose.Types.ObjectId.isValid(groupId)) throw new HandleError(`Invalid group id`, 400);
+        if (!mongoose.Types.ObjectId.isValid(userId)) throw new HandleError(`Invalid user id`, 400);
+        const [user, group] = await Promise.all([
+            User.findById(userId),
+            Conversation.findOne({ type: 'group', _id: groupId })
+        ])
+        if(!group) throw new HandleError(`Group not found`, 404);
+        // only admins are allowed to remove users from the group
+        const admin = await User.findById(req.user.id).select(['first_name', 'last_name']);
+        if (!group.admins.includes(admin._id)) throw new HandleError(`Only admins can delete users from the group`, 403);
+        if(!user) throw new HandleError(`User not found`, 404);
+        if(req.user.id == user._id) throw new HandleError(`You cannot delete yourself from the group`, 403);
+        if(!group.participants.includes(user._id)) throw new HandleError(`User is not in the group`, 404);
+        res.status(200).send({groupID: group._id, message: `${admin.first_name} ${admin.last_name} deleted ${user.first_name} ${user.last_name} from the group`});
+    }catch (e) {
+        next(e);
+    }
 }
+// todo tomorrow
 module.exports.deleteGroup = async (req, res, next) => {
 
 }
@@ -131,10 +151,10 @@ module.exports.fetchConversation = async (req, res, next) => {
         .populate({path: 'messages', populate: { path:'sender', select: ['first_name', 'last_name', 'avatar']}})
         .populate({path: 'participants', select: ['-updatedAt', '-password', '-isVerified']})
         .exec()
+        if(!conversation) throw new HandleError(`Conversation not found`, 404)
         conversation.unreadCount[req.user.id] = 0;
         conversation.markModified('unreadCount'); // Mark the field as modified
         await conversation.save();
-        if(!conversation) throw new HandleError(`Conversation not found`, 404)
         res.status(200).send(conversation)
     }catch(e){
         next(e);
@@ -152,6 +172,7 @@ module.exports.sendMessage = async (req, res, next) => {
             participants: { $in: [req.user.id] },
         })
         if(!conversation) throw new HandleError(`Conversation not found`, 404)
+        if(!conversation.participants.includes(req.user.id)) throw new HandleError(`You are not participant in this conversation`, 403)
         const originalContent = req.body.content.trim();
         const contentWithPlaceholder = originalContent.replace(/\n/g, '@@LINE_BREAK@@');
         const EncryptedContent = CryptoJS.AES.encrypt(contentWithPlaceholder, process.env.CRYPTO_KEY);
