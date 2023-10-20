@@ -166,17 +166,43 @@
     flex-direction: column;
     justify-content: space-between;
 }
-.chat_box .chat_box_header{
+.chat_box_header{
     width: 100%;
     color: #fff;
     background: #242526;
     padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.chat_box .chat_box_header .info{
     display: flex;
     gap: 10px;
 }
 .chat_box_header .participant_name{
     display: flex;
     gap: 10px;
+}
+.chat_box_header .menu_conversation{
+    position: relative;
+    display: flex;
+    cursor: pointer;
+}
+.menu_conversation .menu{
+    position: absolute;
+    z-index: 555;
+    top: 140%;
+    right: 0;
+    background: #3a3b3c;
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+}
+.menu span{
+    padding: 10px;
+}
+.menu span:hover{
+    background: rgba(36, 37, 38, 0.749);
 }
 .admin{
     background: rgb(74, 74, 74);
@@ -213,6 +239,9 @@
     width: 100%;
     display: flex;
     gap: 10px;
+}
+.r .avatar{
+    order: 2;
 }
 .r{
     justify-content: flex-end;
@@ -270,31 +299,24 @@
     cursor: pointer;
 }
 /* create group form */
-.chat_bg .blur{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    background: rgba(0, 0, 0, 0.575);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 .newGroupForm{
     width: 100%;
-    /* min-height: 250px; */
     max-width: 300px;
     background: #242526;
     color: #fff;
     padding: 20px;
 }
-.newGroupForm .close_div{
+.close_div{
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ffffff;
+    padding-bottom: 10px;
 }
 .close_div span{
     cursor: pointer;
+    display: flex;
+    align-items: center;
 }
 .newGroupForm .input_text{
     display: flex;
@@ -318,4 +340,127 @@
     background: #3a3b3c;
     color: #fff;
     border: 0;
+}
+/* add to group form */
+.addToGroupForm{
+    width: 100%;
+    max-width: 400px;
+    background: #242526;
+    color: #fff;
+    padding: 20px;
+    min-height: 400px;
+}
+.addToGroupForm input{
+    background: transparent;
+    border: 1px solid #fff;
+    margin: 25px 0;
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    color: inherit;
+    border-radius: 5px;
+}
+.addToGroupForm .selected_users{
+    width: 100%;
+    height: 70px;
+    margin-bottom: 15px;
+    padding: 5px 0;
+}
+.addToGroupForm .AddUsersBtn{
+    width: 100%;
+    padding: 15px 0;
+    margin-top: 20px;
+    background: #18191a;
+    color: inherit;
+    border: 0;
+    cursor: pointer;
+}
+.addToGroupForm .searchResult{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 200px;
+    width: 100%;
+    position: relative;
+    overflow-y: auto;
+}
+.user_result{
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
+    min-width: max-content;
+}
+.selected_users{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+}
+.selected_users .user_result{
+    background: #18191a;
+    padding: 5px;
+}
+.selected_users .user_info{
+    display: flex;
+    gap: 10px;
+}
+.selected_users::-webkit-scrollbar {
+    height: 6px;
+    width: 4px;
+}
+.selected_users::-webkit-scrollbar-track {
+    background: #00000042;        /* color of the tracking area */
+}
+.selected_users::-webkit-scrollbar-thumb {
+    background-color: #025c4c;    /* color of the scroll thumb */
+    border-radius: 50px;       /* roundness of the scroll thumb */
+    border: 1px solid #18191a;  /* creates padding around scroll thumb */
+}
+/* group participants menu */
+.GroupParticipants{
+    width: 100%;
+    max-width: 450px;
+    background: #242526;
+    color: #fff;
+    padding: 20px;
+    min-height: 300px;
+}
+.GroupParticipants .participants{
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.GroupParticipants .participant_result{
+    background: #18191a;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+}
+.GroupParticipants .kick{
+    color: inherit;
+    cursor: pointer;
+    background: #3a3b3c;
+    padding: 10px 15px;
+    border: 0;
+}
+.participant_result > div{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.GroupParticipants .user_email{
+    font-size: 13px;
+}
+.sign{
+    background: #3a3b3c;
+    margin: 0 5px;
+    padding: 0px 5px;
+    border-radius: 5px;
 }
