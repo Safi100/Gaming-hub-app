@@ -464,3 +464,44 @@
     padding: 0px 5px;
     border-radius: 5px;
 }
+/* confirm delete component */
+.confirmDeleteGroup{
+    background: #242526;
+    color: #fff;
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+}
+.confirmDeleteGroup h2{
+    margin-bottom: 20px;
+}
+.confirmDeleteGroup .group_name_input{
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.group_name_input input{
+    padding: 5px 0;
+}
+.confirmDeleteGroup .buttons{
+    display: flex;
+    gap: 20px;
+}
+.confirmDeleteGroup .buttons > *{
+    flex: 1;
+}
+.confirmDeleteGroup button{
+    border: 0;
+    padding: 10px 20px;
+    background: #025c4c;
+    color: inherit;
+    cursor: pointer;
+}
+.cancelBtn{
+    background: rgb(169, 14, 14) !important;
+}
+.DeleteBtn:disabled{
+    opacity: 0.3;
+    cursor: not-allowed;
+}
