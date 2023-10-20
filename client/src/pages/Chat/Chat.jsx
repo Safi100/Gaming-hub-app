@@ -7,10 +7,12 @@ import SearchChatResult from '../../components/chat/SearchChatResult';
 import io from '../../components/socket';
 import chatImage from '../../assets/chat_icon.png';
 import './chat.css';
+import CreateGroup from '../../components/chat/CreateGroup';
 
 const Chat = () => {
   const chatContext = useContext(ChatContext)
   const { id } = useParams(); // conversation id
+  const [openNewGroupForm, setOpenNewGroupForm] = useState(false);
   useEffect(() => {
     const handleNewMessage = (data) => {
       // Handle new messages here
@@ -38,6 +40,7 @@ const Chat = () => {
               </Link>
             ))}
           </div>
+          <button className='createGroupBtn' onClick={()=> setOpenNewGroupForm(true)}>Create Group</button>
         </div>
         <div className='chat_box'>
           {id ? (
@@ -50,6 +53,7 @@ const Chat = () => {
           )}
         </div>
       </div>
+      {openNewGroupForm && <CreateGroup setOpenNewGroupForm={setOpenNewGroupForm} />}
     </div>
   );
 };
