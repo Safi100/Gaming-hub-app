@@ -7,34 +7,7 @@ import CryptoJS from 'crypto-js';
 import Groups2Icon from '@mui/icons-material/Groups2';
 import { deepOrange } from '@mui/material/colors';
 import { AuthContext } from '../../context/AuthContext';
-
-function stringToColor(string) {
-  let hash = 0;
-  let i;
-  /* eslint-disable no-bitwise */
-    for (i = 0; i < string.length; i += 1) {
-      hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-  
-    let color = '#';
-  
-    for (i = 0; i < 3; i += 1) {
-      const value = (hash >> (i * 8)) & 0xff;
-      color += `00${value.toString(16)}`.slice(-2);
-    }
-    /* eslint-enable no-bitwise */
-  
-    return color;
-  }
-  
-  function stringAvatar(name) {
-    return {
-      sx: {
-        bgcolor: stringToColor(name),
-      },
-      children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
-    };
-  }
+import { stringAvatar } from '../avatar';
 
 const Conversation_list = ({conversation}) => {
   const {id} = useParams()
@@ -83,7 +56,8 @@ const Conversation_list = ({conversation}) => {
           <div>
             <div className='last_message_title'>
               {/* Decrypt the content before display it */}
-              <span className='last_message'>{conversation.messages[0]?.sender._id === userID ? `me: ${AES.decrypt(conversation.messages[0].content, "thisiscryptosecretkey").toString(CryptoJS.enc.Utf8).replace(/@@LINE_BREAK@@/g, '')}` : `${AES.decrypt(conversation.messages[0].content, "thisiscryptosecretkey").toString(CryptoJS.enc.Utf8).replace(/@@LINE_BREAK@@/g, '')}`}</span>
+              {!conversation.messages[0].isFromSystem && <span className='last_message'>{conversation.messages[0]?.sender._id === userID ? `me: ${AES.decrypt(conversation.messages[0].content, "thisiscryptosecretkey").toString(CryptoJS.enc.Utf8).replace(/@@LINE_BREAK@@/g, '')}` : `${conversation.type === 'group' ? `${conversation.messages[0].sender.first_name} ${conversation.messages[0].sender.last_name}: ` : ""}${AES.decrypt(conversation.messages[0].content, "thisiscryptosecretkey").toString(CryptoJS.enc.Utf8).replace(/@@LINE_BREAK@@/g, '')}`}</span>}
+              {conversation.messages[0].isFromSystem && <span className='last_message'>{`${AES.decrypt(conversation.messages[0].content, "thisiscryptosecretkey").toString(CryptoJS.enc.Utf8).replace(/@@LINE_BREAK@@/g, '')}`}</span>}
               {conversation.unreadCount[userID] > 0 &&
                 (conversation._id === id ? '' : <span className='unread'>{conversation.unreadCount[userID]}</span>)}
             </div>
