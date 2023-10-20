@@ -165,16 +165,11 @@ module.exports.resetPassword = async (req, res, next) => {
         const {id, token} = req.params;
         const password = req.body.password.trim();
         const confirmPassword = req.body.confirmPassword.trim();
-        let userID;
         // check if user and token is valid
-        try {
-            userID = new mongoose.Types.ObjectId(id);
-        } catch (error) {
-            throw new HandleError(`Invalid link`, 400);
-        }
-        const user = await User.findById(userID);
+        if(!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Invalid link`, 400);
+        const user = await User.findById(id);
         if(!user) throw new HandleError(`Invalid link`, 400)
-        const PasswordResetToken = await PasswordToken.findOne({ userId: userID });
+        const PasswordResetToken = await PasswordToken.findOne({ userId: id });
         if (!PasswordResetToken) throw new HandleError(`Invalid link`, 400);
         const match = await bcrypt.compare(token, PasswordResetToken.token);
         if(!match) throw new HandleError(`Invalid link`, 400);
@@ -183,10 +178,10 @@ module.exports.resetPassword = async (req, res, next) => {
         if (password !== confirmPassword) throw new HandleError(`Password and confirm password must match.`, 400);
         // hash password
         const hashedPass = await bcrypt.hash(password, 10);
-        const updatedUser = await User.findByIdAndUpdate({_id: userID}, {password: hashedPass})
+        const updatedUser = await User.findByIdAndUpdate({_id: id}, {password: hashedPass})
         if(!updatedUser) throw new HandleError(`Password didn't update.`, 400);
         // delete token after using it
-        await PasswordToken.deleteOne({ userId: userID });
+        await PasswordToken.deleteOne({ userId: id });
         res.send({message: 'Password changed successfully'});
     }catch(e){
         console.log(e);
@@ -196,23 +191,18 @@ module.exports.resetPassword = async (req, res, next) => {
 module.exports.verifyEmail = async (req, res, next) => {
     try {
         const { id, token } = req.params;
-        let userID;
-        try {
-            userID = new mongoose.Types.ObjectId(id);
-        } catch (error) {
-            throw new HandleError(`Invalid link`, 400);
-        }
+        if(!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Invalid link`, 400);
         // handle error if user already verified and token is not valid
-        const user = await User.findById(userID);
+        const user = await User.findById(id);
         if (!user || user.isVerified) throw new HandleError(user ? `Email already verified` : `Invalid link`, 400);
-        const EmailVerifyToken = await EmailToken.findOne({ userId: userID });
+        const EmailVerifyToken = await EmailToken.findOne({ userId: id });
         if (!EmailVerifyToken) throw new HandleError(`Invalid link`, 400);
         const match = await bcrypt.compare(token, EmailVerifyToken.token);
         if(!match) throw new HandleError(`Invalid link`, 400);
         // set user to verified
         await User.updateOne({ _id: user._id }, { isVerified: true });
         // delete email verification token after use it
-        await EmailToken.deleteOne({ userId: userID });
+        await EmailToken.deleteOne({ userId: id });
         res.status(200).send({ message: 'Email verified successfully.' });
     } catch (e) {
         next(e);
