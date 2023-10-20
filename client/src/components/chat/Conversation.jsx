@@ -5,6 +5,7 @@ import io from '../socket';
 import Message from '../../components/chat/Message';
 import AddToGroup from './AddToGroup';
 import GroupParticipants from './GroupParticipants'
+import ConfirmDeleteGroup from './ConfirmDeleteGroup'
 import { stringAvatar } from '../avatar';
 import SendIcon from '@mui/icons-material/Send';
 import { deepOrange } from '@mui/material/colors';
@@ -22,6 +23,7 @@ const Conversation = ({ conversationID }) => {
     const [loading, setLoading] = useState(true);
     const [openAddToGroupForm, setOpenAddToGroupForm] = useState(false);
     const [openParticipantsMenu, setOpenParticipantsMenu] = useState(false);
+    const [openDeleteGroup, setOpenDeleteGroup] = useState(false);
     const [openMenu, setOpenMenu] = useState(false);
     const messagesRef = useRef(null);
     const [userID, setUserID] = useState('')
@@ -84,7 +86,10 @@ const Conversation = ({ conversationID }) => {
             setNewMessage('');
             io.emit('new_message', { convID: conversationID, newMessage});
         })
-        .catch((err) => console.log(err))
+        .catch((err) => {
+            console.log(err)
+            if(err.response.status === 404) navigate(`/chat`)
+        })
     }
     return (
         <>
@@ -112,7 +117,8 @@ const Conversation = ({ conversationID }) => {
                                 {openMenu && <div className="menu">
                                         {conversation.admins.includes(userID) && <span onClick={()=> setOpenAddToGroupForm(true)}>Add to group</span>}
                                         <span onClick={()=> setOpenParticipantsMenu(true)}>Participants</span>
-                                        <span>Leave Group</span>
+                                        {!conversation.admins.includes(userID) && <span>Leave Group</span>}
+                                        {conversation.admins.includes(userID) && <span onClick={()=> setOpenDeleteGroup(true) }>Delete Group</span>}
                                     </div>}
                             </span>
                         </>}
@@ -139,6 +145,7 @@ const Conversation = ({ conversationID }) => {
                         setGroupParticipants={setGroupParticipants} 
                         setOpenParticipantsMenu={setOpenParticipantsMenu} 
                     />}
+                    {conversation.type === "group" && openDeleteGroup && <ConfirmDeleteGroup group={conversation} setOpenDeleteGroup={setOpenDeleteGroup} />}
                 </>
             )}
         </>
