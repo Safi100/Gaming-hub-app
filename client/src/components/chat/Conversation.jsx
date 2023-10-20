@@ -1,48 +1,28 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import Message from '../../components/chat/Message';
-import Axios from 'axios';
-import ImageIcon from '@mui/icons-material/Image';
-import SendIcon from '@mui/icons-material/Send';
 import io from '../socket';
+import Message from '../../components/chat/Message';
+import AddToGroup from './AddToGroup';
+import GroupParticipants from './GroupParticipants'
+import { stringAvatar } from '../avatar';
+import SendIcon from '@mui/icons-material/Send';
 import { deepOrange } from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
 import Groups2Icon from '@mui/icons-material/Groups2';
-
-function stringToColor(string) {
-    let hash = 0;
-    let i;
-    /* eslint-disable no-bitwise */
-      for (i = 0; i < string.length; i += 1) {
-        hash = string.charCodeAt(i) + ((hash << 5) - hash);
-      }
-      let color = '#';
-      for (i = 0; i < 3; i += 1) {
-        const value = (hash >> (i * 8)) & 0xff;
-        color += `00${value.toString(16)}`.slice(-2);
-      }
-      /* eslint-enable no-bitwise */
-    
-      return color;
-    }
-    
-    function stringAvatar(name) {
-      return {
-        sx: {
-          bgcolor: stringToColor(name),
-        },
-        children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
-      };
-    }
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Axios from 'axios';
 
 const Conversation = ({ conversationID }) => {
-    // const chatContext = useContext(ChatContext);
     const authContext = useContext(AuthContext);
     const navigate = useNavigate()
     const [conversation, setConversation] = useState({});
+    const [groupParticipants, setGroupParticipants] = useState([]);
     const [messages, setMessages] = useState([])
     const [loading, setLoading] = useState(true);
+    const [openAddToGroupForm, setOpenAddToGroupForm] = useState(false);
+    const [openParticipantsMenu, setOpenParticipantsMenu] = useState(false);
+    const [openMenu, setOpenMenu] = useState(false);
     const messagesRef = useRef(null);
     const [userID, setUserID] = useState('')
     useEffect(() => {
@@ -70,24 +50,24 @@ const Conversation = ({ conversationID }) => {
         Axios.get(`http://localhost:8000/api/conversation/${conversationID}`)
             .then(res => {
                 setConversation(res.data);
+                if(res.data.type === 'group'){ setGroupParticipants([...res.data.participants]);}
                 setMessages([...res.data.messages]);
                 setLoading(false);
+                setTimeout(() => {
+                    scrollToBottom();
+                }, 0);
             })
             .catch(err => {
                 console.log(err);
                 navigate('/chat')
             });
     }, [conversationID]);
-
-    useEffect(() => {
-        // Scroll to the bottom when the conversation or loading state changes
-        scrollToBottom();
-    }, [conversation, loading]);
-
     // Function to scroll to the bottom of the messages div
     const scrollToBottom = () => {
         if (messagesRef.current) {
+            // console.log(messagesRef.current.scrollHeight);
             messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+            // console.log('Scrolled to bottom');
         }
     };
     const [newMessage, setNewMessage] = useState('')
@@ -97,12 +77,12 @@ const Conversation = ({ conversationID }) => {
     }
     const SendMessage = (e) => {
         e.preventDefault();
+        if(newMessage.length < 1) return; 
         Axios.post(`http://localhost:8000/api/conversation/${conversationID}/send-message`, {content: newMessage})
         .then((res) => {
             e.target.reset();
             setNewMessage('');
             io.emit('new_message', { convID: conversationID, newMessage});
-            scrollToBottom();
         })
         .catch((err) => console.log(err))
     }
@@ -111,30 +91,54 @@ const Conversation = ({ conversationID }) => {
             {loading ? <p>loading</p> : (
                 <>
                     <div className='chat_box_header'>
-                        <div className="avatar">
-                            {conversation.type === 'private' ?
-                            <Avatar variant="square" style={{width:'60px', height:'60px'}} {...stringAvatar(`${conversation.participants.filter(participant => participant._id !== userID).map(participant => `${participant.first_name} ${participant.last_name}`)}`)} />
-                            :
-                            <Avatar variant="square" sx={{ bgcolor: deepOrange[500], width:60, height: 60}}><Groups2Icon /></Avatar>        
-                            }
+                        <div className='info'>
+                            <div className="avatar">
+                                {conversation.type === 'private' ?
+                                <Avatar variant="square" style={{width:'60px', height:'60px'}} {...stringAvatar(`${conversation.participants.filter(participant => participant._id !== userID).map(participant => `${participant.first_name} ${participant.last_name}`)}`)} />
+                                :
+                                <Avatar variant="square" sx={{ bgcolor: deepOrange[500], width:60, height: 60}}><Groups2Icon /></Avatar>        
+                                }
+                            </div>
+                            <div>
+                                <p>{conversation.type === 'private' ? conversation.participants.filter(participant => participant._id !== userID).map(participant => (<span className='participant_name' key={participant._id}>{`${participant.first_name} ${participant.last_name}`} {participant.isAdmin ? <span className='admin'>Admin</span> : null} </span> )) 
+                                : `${conversation.title}`}</p>
+                                <p>{conversation.type === 'private' ? `Joined at ${conversation.participants.filter(participant => participant._id !== userID).map(participant => new Date(participant.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric'}))}`
+                                : `Created at ${new Date(conversation.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric'})}`}</p>
+                            </div>
                         </div>
-                        <div>
-                            <p>{conversation.type === 'private' ? conversation.participants.filter(participant => participant._id !== userID).map(participant => (<span className='participant_name' key={participant._id}>{`${participant.first_name} ${participant.last_name}`} {participant.isAdmin ? <span className='admin'>Admin</span> : null} </span> )) 
-                            : `${conversation.title}`}</p>
-                            <p>{conversation.type === 'private' ? `Joined at ${conversation.participants.filter(participant => participant._id !== userID).map(participant => new Date(participant.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric'}))}`
-                            : `Created at ${new Date(conversation.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric'})}`}</p>
-                        </div>
+                        {conversation.type === 'group' && <>
+                            <span className='menu_conversation' onClick={() => setOpenMenu(!openMenu)}>
+                                <MoreVertIcon />
+                                {openMenu && <div className="menu">
+                                        {conversation.admins.includes(userID) && <span onClick={()=> setOpenAddToGroupForm(true)}>Add to group</span>}
+                                        <span onClick={()=> setOpenParticipantsMenu(true)}>Participants</span>
+                                        <span>Leave Group</span>
+                                    </div>}
+                            </span>
+                        </>}
                     </div>
+
                     <div className="messages" style={{ maxHeight: '450px', overflowY: 'auto' }} ref={messagesRef}>
                         {messages?.map(message => (
-                            <Message message={message} key={message._id} />
+                            <Message message={message} isGroup={conversation.type === "group"} key={message._id} />
                         ))}
                     </div>
                     <form className="message_input" onSubmit={SendMessage}>
-                        <div className='icon_upload_image'><ImageIcon style={{color: '#fff'}} /></div>
                         <textarea type="text" value={newMessage} onChange={HandleMessage} placeholder={`Type a message`}/>
                         <button className='send'><SendIcon style={{color: "#fff"}}/></button>
                     </form>
+                    {conversation.type === "group" && openAddToGroupForm && conversation.admins.includes(userID) && 
+                    <AddToGroup 
+                        setGroupParticipants={setGroupParticipants}
+                        setOpenAddToGroupForm={setOpenAddToGroupForm} 
+                    />}
+                    {conversation.type === "group" && openParticipantsMenu && 
+                    <GroupParticipants 
+                        admins={conversation.admins} 
+                        group_participants={groupParticipants} 
+                        setGroupParticipants={setGroupParticipants} 
+                        setOpenParticipantsMenu={setOpenParticipantsMenu} 
+                    />}
                 </>
             )}
         </>
