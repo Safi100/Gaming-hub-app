@@ -47,7 +47,7 @@ module.exports.addUserToGroup = async (req, res, next) => {
         await Promise.all(
             userIds.map(async (userId) => {
                 if (!mongoose.Types.ObjectId.isValid(userId)) throw new HandleError(`Invalid user id: ${userId}`, 400);
-                const user = await User.findById(userId).select(['first_name', 'last_name']);
+                const user = await User.findById(userId).select(['-updatedAt', '-password', '-isVerified']);
                 if (!user) throw new HandleError(`User not found for id: ${userId}`, 404);
                 if (group.participants.includes(user._id)) {
                     usersAlreadyInGroup.push(`${user.first_name} ${user.last_name}`);
@@ -64,7 +64,11 @@ module.exports.addUserToGroup = async (req, res, next) => {
         }
         await group.save();
         const fullNames = users.map(user => `${user.first_name} ${user.last_name}`);
-        res.status(200).send({groupID: group._id, message: `${AdminAdded.first_name} ${AdminAdded.last_name} Added ${fullNames.join(', ')} to the group`});
+        res.status(200).send({
+            groupID: group._id,
+            message: `${AdminAdded.first_name} ${AdminAdded.last_name} Added ${fullNames.join(', ')} to the group`,
+            AddedUsers: users
+        });
     }catch (e) {
        next(e);
     }
@@ -86,9 +90,45 @@ module.exports.removeUserFromGroup = async (req, res, next) => {
         if(!user) throw new HandleError(`User not found`, 404);
         if(req.user.id == user._id) throw new HandleError(`You cannot delete yourself from the group`, 403);
         if(!group.participants.includes(user._id)) throw new HandleError(`User is not in the group`, 404);
+        // remove user from the group
+        group.participants = group.participants.filter(participantID => participantID.toString() !== user._id.toString());
+        await group.save();
         res.status(200).send({groupID: group._id, message: `${admin.first_name} ${admin.last_name} deleted ${user.first_name} ${user.last_name} from the group`});
     }catch (e) {
         next(e);
+    }
+}
+// Search for users (not members in the group) to add to the group
+module.exports.searchToAdd = async (req, res, next) => {
+    try{
+        const groupId = req.params.groupId
+        const {q} = req.query
+        if(q.length < 1) return 0;
+        // check id validity
+        if (!mongoose.Types.ObjectId.isValid(groupId)) throw new HandleError(`Invalid group id`, 400);
+        const group = await Conversation.findOne({ _id: groupId, type: 'group' })
+        if(!group) throw new HandleError(`Group not found` , 404);
+        const users = await User.find({
+            _id: {
+                $nin: group.participants,
+              },
+            $or: [
+              {
+                $expr: {
+                  $regexMatch: {
+                    input: {
+                      $concat: ["$first_name", " ", "$last_name"]
+                    },
+                    regex: new RegExp(q, "i")
+                  }
+                }
+              }
+            ]
+          }).select(['_id', 'avatar', 'first_name', 'last_name', 'email']);
+        res.status(200).json(users)
+    }catch(e){
+        console.log(e);
+        next(e)
     }
 }
 // todo tomorrow
