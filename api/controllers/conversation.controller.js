@@ -101,7 +101,7 @@ module.exports.removeUserFromGroup = async (req, res, next) => {
 // Search for users (not members in the group) to add to the group
 module.exports.searchToAdd = async (req, res, next) => {
     try{
-        const groupId = req.params.groupId
+        const {groupId} = req.params
         const {q} = req.query
         if(q.length < 1) return 0;
         // check id validity
@@ -131,9 +131,18 @@ module.exports.searchToAdd = async (req, res, next) => {
         next(e)
     }
 }
-// todo tomorrow
 module.exports.deleteGroup = async (req, res, next) => {
-
+    try {
+        const {groupId} = req.params;
+        if (!mongoose.Types.ObjectId.isValid(groupId)) throw new HandleError(`Invalid group id`, 400);
+        const group = await Conversation.findOneAndDelete({ type: 'group', _id: groupId });
+        if (!group) throw new HandleError(`Group not found`, 404);
+        if (!group.admins.includes(req.user.id)) throw new HandleError(`Only admins can delete the group`, 403);
+        await Message.deleteMany({ _id: { $in: group.messages } });
+        res.status(200).json({success: true, message: "Group deleted successfully"})
+    }catch(e){
+        next(e);
+    }
 }
 // get all current user's conversations that have at least one message
 module.exports.Conversation_List = async (req, res, next) => {      
