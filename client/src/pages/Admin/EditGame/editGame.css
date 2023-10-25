@@ -1,0 +1,30 @@
+.editGameForm{
+    padding: 30px 0;
+}
+.editGameForm .images{
+    width: 100%; /* Set the width of the container to 100% */
+    position: relative;
+    overflow: hidden; /* Hide the overflow if necessary */
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+.images img {
+    display: block;
+    max-width: 100%; /* Ensure images don't exceed container width */
+    height: auto;
+}
+
+.main{
+    max-width: 190px;
+     /* Set the width of the main image to your desired size */
+}
+
+.cover img{
+    object-fit: cover;
+}
+.main img, .cover img {
+    margin-top: 10px;
+    height: 286px;
+    width: 100%;
+}
