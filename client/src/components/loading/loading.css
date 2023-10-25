@@ -20,3 +20,14 @@
     justify-content: center;
     background: #18191a;
 }
+.page_loading{
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #18191a;
+}
