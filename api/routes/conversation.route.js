@@ -1,6 +1,7 @@
 const express = require('express')
 const { Create_Group_Conversation, create_or_fetch_private_conversation, sendMessage, Conversation_List,
-     fetchConversation, addUserToGroup, removeUserFromGroup, searchToAdd, deleteGroup, leaveGroup } = require('../controllers/conversation.controller')
+     fetchConversation, addUserToGroup, removeUserFromGroup, searchToAdd, deleteGroup, leaveGroup,
+     fetchGroupParticipants } = require('../controllers/conversation.controller')
 const { searchForUsers } = require('../controllers/user.controller');
 const router = express.Router({mergeParams: true})
 
@@ -9,6 +10,7 @@ router.post('/create-or-fetch-private-conversation', create_or_fetch_private_con
 router.get('/conversation-list', Conversation_List)
 router.post('/search-users-to-chat', searchForUsers)
 router.get('/:id', fetchConversation)
+router.get('/:id/group-participants', fetchGroupParticipants)
 router.post('/:conversationID/send-message', sendMessage)
 router.post('/:groupId/leave-group', leaveGroup)
 router.delete('/:groupId/delete-group', deleteGroup)
