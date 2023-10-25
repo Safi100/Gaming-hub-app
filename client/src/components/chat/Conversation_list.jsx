@@ -12,7 +12,7 @@ import { stringAvatar } from '../avatar';
 const Conversation_list = ({conversation}) => {
   const {id} = useParams()
   const authContext = useContext(AuthContext);
-  const userID = authContext.UserID();
+  const userID = authContext.currentUser._id;
   
   // get time of last message
   // Function to format the timestamps
