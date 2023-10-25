@@ -1,25 +1,21 @@
 // AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-
+import axios from 'axios';
 export const  AuthContext = createContext([]);
 
 export function AuthContextProvider({ children }) {
-
-  const [id, setID] = useState('')
-
-    // Function to check if the authentication token cookie exists
-    const UserID = () => {
-      return id;
-    };
-
+  const [currentUser, setCurrentUser] = useState(null)
   useEffect(() => {
-    const user = Cookies.get('c_user');
-    if (user) setID(user);
-  }, []);
+    if(!Cookies.get('c_user')) return;
+    axios.get('http://localhost:8000/api/user/currentUser')
+    .then((res) => {
+      setCurrentUser(res.data)
+    })
+  }, [])
 
   return (
-    <AuthContext.Provider value={{ UserID }}>
+    <AuthContext.Provider value={{ currentUser }}>
       {children}
     </AuthContext.Provider>
   );
