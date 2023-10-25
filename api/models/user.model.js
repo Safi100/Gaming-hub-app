@@ -37,6 +37,11 @@ const userSchema = new Schema({
     isVerified: {
         type: Boolean,
         default: false
+    },
+    bio: {
+        type: String,
+        default: '',
+        maxlength: 500  // Maximum character limit for the bio
     }
 }, {timestamps: true})
 
