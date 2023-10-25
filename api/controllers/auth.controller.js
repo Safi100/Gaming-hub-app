@@ -112,10 +112,10 @@ module.exports.Login = async (req, res, next) => {
         }
         // login successful
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-        const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
+        // const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
         const { password, ...userData } = user.toObject();
-        res.cookie('c_user', user._id.toString(), { expires: expiryDate });
-        res.cookie('access_token', token, { httpOnly: true, expires: expiryDate }).status(200).json({...userData, token});
+        res.cookie('c_user', user._id.toString());
+        res.cookie('access_token', token, { httpOnly: true }).status(200).json({...userData, token});
     }catch(e){
         next(e)
     }
@@ -211,6 +211,7 @@ module.exports.verifyEmail = async (req, res, next) => {
 module.exports.Logout = async (req, res, next) => {
     try{
         await res.clearCookie('access_token');
+        await res.clearCookie('c_user');
         res.status(200).send({success: true})
     }catch (e) {
         next(e);
