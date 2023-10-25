@@ -178,10 +178,11 @@ module.exports.fetchGroupParticipants = async (req, res, next) => {
         if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Invalid conversation id `, 400);
 
         const group = await Conversation.findOne({ _id: id, type: 'group' })
-        .selected('participants')
+        .select('participants')
         .populate({path: 'participants', select: ['-updatedAt', '-password', '-isVerified']})
         .exec()
         if(!group) throw new HandleError(`Conversation not found`, 404)
+        res.status(200).json(group.participants);
     }catch(e){
         next(e);
     }
