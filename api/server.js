@@ -8,11 +8,11 @@ const morgan = require('morgan');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const http = require('http');
-// const socket = require('./utils/socket');
+const bodyParser = require('body-parser');
+
 const app = express();
 
 const server = http.createServer(app);
-// const io = socket(server);
 const io = require('socket.io')(server, {
     cors: {
       origin: "http://localhost:3000", // Allow connections from this origin
@@ -29,8 +29,8 @@ const io = require('socket.io')(server, {
 
   });
 app.set('socketio', io);
-
-mongoose.connect( 'mongodb://localhost:27017/Gaming_Hub' , {
+const DB_URL = process.env.MONGO_URL || 'mongodb://localhost:27017/Gaming_Hub'
+mongoose.connect(DB_URL , {
     useNewUrlParser: true,  
     useUnifiedTopology: true,
     family:4
@@ -45,10 +45,20 @@ app.use(cors({
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
+app.use(bodyParser.json());
 
 const Messages = require('./models/message.model');
-const { authMiddleware } = require('./middleware')
+const { authMiddleware } = require('./middleware');
 
+// app.use((req, res, next) => {
+//   console.log(req.cookies);
+//   res.clearCookie('c_user');
+//   res.cookie('access_token', {
+//     first_name: "Safi",
+//     last_name: "jamal"
+//   });
+//   next();
+// })
 app.get('/test', authMiddleware, async (req, res) => {
   await Messages.deleteMany()
 })
@@ -56,10 +66,12 @@ app.get('/test', authMiddleware, async (req, res) => {
 const AuthRoute = require('./routes/auth.route');
 const ConversationRoute = require('./routes/conversation.route');
 const UserRoute = require('./routes/user.route');
+const GameRoute = require('./routes/game.route');
 
 app.use('/api/auth/', AuthRoute)
 app.use('/api/conversation/', authMiddleware, ConversationRoute) // protected route
 app.use('/api/user/', UserRoute)
+app.use('/api/game/', GameRoute)
 
 
 app.use((err, req, res, next) => {
