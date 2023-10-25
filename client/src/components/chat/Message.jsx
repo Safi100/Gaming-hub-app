@@ -10,7 +10,9 @@ const Message = ({message, isGroup}) => {
     const [userID, setUserID] = useState('')
     const [loading, setLoading] = useState(true)
     useEffect(() => {
-        setUserID(authContext.UserID());
+        if (authContext.currentUser) {
+            setUserID(authContext.currentUser._id);
+          }
         setLoading(false);
     }, [authContext]);
 
