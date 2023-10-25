@@ -144,6 +144,48 @@ module.exports.deleteGroup = async (req, res, next) => {
         next(e);
     }
 }
+module.exports.leaveGroup = async (req, res, next) => {
+    try {
+        const io = req.app.get('socketio');
+        const {groupId} = req.params;
+        if (!mongoose.Types.ObjectId.isValid(groupId)) throw new HandleError(`Invalid group id`, 400);
+        const group = await Conversation.findOne({ type: 'group', _id: groupId });
+
+        if (!group) throw new HandleError(`Group not found`, 404);
+        const user = await User.findById(req.user.id);
+        if(group.admins.includes(user._id)) throw new HandleError(`Admin can only delete the group, not left`, 404);
+        if(!group.participants.includes(user._id)) throw new HandleError(`You are already not in the group`, 404);
+        // remove user from the group
+        group.participants = group.participants.filter(participantID => participantID.toString() !== user._id.toString());
+        await group.save();
+        // SEND ALERT MESSAGE
+        const EncryptedContent = CryptoJS.AES.encrypt(`${user.first_name} ${user.last_name} left the group`, process.env.CRYPTO_KEY);
+        const alertedMessage = await new Message({
+            sender: req.user.id,
+            content: EncryptedContent,
+            isFromSystem: true
+        }).save()
+        io.emit('new_message', { convID: groupId, newMessage: alertedMessage});
+        res.status(200).send({success: true})
+    }catch(e){
+        next(e);
+    }
+}
+// get group participants
+module.exports.fetchGroupParticipants = async (req, res, next) => {
+    try{
+        const {id} = req.params
+        if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Invalid conversation id `, 400);
+
+        const group = await Conversation.findOne({ _id: id, type: 'group' })
+        .selected('participants')
+        .populate({path: 'participants', select: ['-updatedAt', '-password', '-isVerified']})
+        .exec()
+        if(!group) throw new HandleError(`Conversation not found`, 404)
+    }catch(e){
+        next(e);
+    }
+}
 // get all current user's conversations that have at least one message
 module.exports.Conversation_List = async (req, res, next) => {      
     try{
