@@ -1,18 +1,22 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import io from '../components/socket'; // Import io.io-client
+import { useLocation, useNavigate } from 'react-router-dom';
 import Axios from 'axios';
+
 // Create the ChatContext with an initial value of an empty array
 export const ChatContext = createContext([]);
 export const ChatContextProvider = ({ children }) => {
   const navigate = useNavigate()
-  const {id} = useParams()
+  const location = useLocation();
   const [conversations, setConversations] = useState([]);
   const [fetchIntervalId, setFetchIntervalId] = useState(null);
   const [isOnChatPage, setIsOnChatPage] = useState(false);
+
   useEffect(() => {
-    // Check if you are on the chat page
-    setIsOnChatPage(true);
+    // Check the current route to determine if the user is on the chat page
+    setIsOnChatPage(location.pathname.includes('chat'));
+  }, [location]);
+
+  useEffect(() => {
     // Fetch Conversations initially
     if (!isOnChatPage) return
     
@@ -34,8 +38,7 @@ export const ChatContextProvider = ({ children }) => {
         setConversations(res.data);
     })
     .catch(err => {
-      console.error(err);    
-      // Handle the error here and possibly set an error state
+      if(err.response.status === 401) navigate('/')
     });
   };
 
