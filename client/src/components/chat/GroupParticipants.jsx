@@ -6,14 +6,17 @@ import { stringAvatar } from '../avatar';
 import { AuthContext } from '../../context/AuthContext';
 import Axios from 'axios';
 
-const GroupParticipants = ({admins, group_participants, setGroupParticipants, setOpenParticipantsMenu}) => {
+const GroupParticipants = ({admins, setOpenParticipantsMenu}) => {
     const {id} = useParams()
     const authContext = useContext(AuthContext);
-    const [userID, setUserID] = useState('')
+    const userID = authContext.currentUser._id;
+    const [group_participants, setGroupParticipants] = useState([])
     const [error, setError] = useState('')
     useEffect(() => {
-        setUserID(authContext.UserID());
-    }, [authContext])
+        Axios.get(`http://localhost:8000/api/conversation/${id}/group-participants`)
+        .then((res) => setGroupParticipants(res.data))
+        .catch(err => console.log(err))
+    }, [id])
     const handleRemoveUser = (userID) => {
         console.log("DELETED USER ", userID);
         Axios.delete(`http://localhost:8000/api/conversation/${id}/remove-user-from-group/${userID}`)

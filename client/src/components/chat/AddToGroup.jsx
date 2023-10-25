@@ -6,7 +6,7 @@ import Avatar from '@mui/material/Avatar';
 import Axios from 'axios'
 import { stringAvatar } from '../avatar';
 
-const AddToGroup = ({setGroupParticipants, setOpenAddToGroupForm}) => {
+const AddToGroup = ({setOpenAddToGroupForm}) => {
     const {id} = useParams()
     const [search, setSearch] = useState('')
     const [loading, setLoading] = useState(false)
@@ -52,7 +52,6 @@ const AddToGroup = ({setGroupParticipants, setOpenAddToGroupForm}) => {
       .then((res) => {
         setSelectedUsers([])
         console.log(res.data);
-        setGroupParticipants(prevParticipants => [...prevParticipants, ...res.data.AddedUsers])
         Axios.post(`http://localhost:8000/api/conversation/${res.data.groupID}/send-message/`, {content:`${res.data.message}`, isFromSystem: true})
         .then(() => {
           setOpenAddToGroupForm(false)

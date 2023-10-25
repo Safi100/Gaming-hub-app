@@ -13,9 +13,12 @@ import Avatar from '@mui/material/Avatar';
 import Groups2Icon from '@mui/icons-material/Groups2';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Axios from 'axios';
+import ChatLoading from '../loading/ChatLoading';
 
 const Conversation = ({ conversationID }) => {
     const authContext = useContext(AuthContext);
+    const userID = authContext.currentUser?._id;
+    
     const navigate = useNavigate()
     const [conversation, setConversation] = useState({});
     const [groupParticipants, setGroupParticipants] = useState([]);
@@ -26,10 +29,6 @@ const Conversation = ({ conversationID }) => {
     const [openDeleteGroup, setOpenDeleteGroup] = useState(false);
     const [openMenu, setOpenMenu] = useState(false);
     const messagesRef = useRef(null);
-    const [userID, setUserID] = useState('')
-    useEffect(() => {
-        setUserID(authContext.UserID());
-    }, [authContext])
     useEffect(() => {
         // Listen for new messages
         io.on('new_message', ({ convID, newMessage }) => {
@@ -91,9 +90,16 @@ const Conversation = ({ conversationID }) => {
             if(err.response.status === 404) navigate(`/chat`)
         })
     }
+    const leaveGroup = () => {
+        Axios.post(`http://localhost:8000/api/conversation/${conversationID}/leave-group`)
+        .then((res) => {
+            navigate('/chat')
+        })
+        .catch((err) => console.log(err))
+    }
     return (
         <>
-            {loading ? <p>loading</p> : (
+            {loading ? <ChatLoading /> : (
                 <>
                     <div className='chat_box_header'>
                         <div className='info'>
@@ -117,7 +123,7 @@ const Conversation = ({ conversationID }) => {
                                 {openMenu && <div className="menu">
                                         {conversation.admins.includes(userID) && <span onClick={()=> setOpenAddToGroupForm(true)}>Add to group</span>}
                                         <span onClick={()=> setOpenParticipantsMenu(true)}>Participants</span>
-                                        {!conversation.admins.includes(userID) && <span>Leave Group</span>}
+                                        {!conversation.admins.includes(userID) && <span onClick={leaveGroup}>Leave Group</span>}
                                         {conversation.admins.includes(userID) && <span onClick={()=> setOpenDeleteGroup(true) }>Delete Group</span>}
                                     </div>}
                             </span>
@@ -134,15 +140,13 @@ const Conversation = ({ conversationID }) => {
                         <button className='send'><SendIcon style={{color: "#fff"}}/></button>
                     </form>
                     {conversation.type === "group" && openAddToGroupForm && conversation.admins.includes(userID) && 
-                    <AddToGroup 
-                        setGroupParticipants={setGroupParticipants}
+                    <AddToGroup
                         setOpenAddToGroupForm={setOpenAddToGroupForm} 
                     />}
                     {conversation.type === "group" && openParticipantsMenu && 
-                    <GroupParticipants 
-                        admins={conversation.admins} 
+                    <GroupParticipants
+                        admins={conversation.admins}
                         group_participants={groupParticipants} 
-                        setGroupParticipants={setGroupParticipants} 
                         setOpenParticipantsMenu={setOpenParticipantsMenu} 
                     />}
                     {conversation.type === "group" && openDeleteGroup && <ConfirmDeleteGroup group={conversation} setOpenDeleteGroup={setOpenDeleteGroup} />}
