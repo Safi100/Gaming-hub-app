@@ -42,7 +42,13 @@ const userSchema = new Schema({
         type: String,
         default: '',
         maxlength: 500  // Maximum character limit for the bio
-    }
+    },
+    followers: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ]
 }, {timestamps: true})
 
 module.exports = mongoose.model('User', userSchema)
