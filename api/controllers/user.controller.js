@@ -33,17 +33,24 @@ module.exports.searchForUsers = async (req, res, next) => {
       next(e)
   }
 }
-module.exports.followUser = async (req, res, next) => {
+module.exports.follow_unfollow_user = async (req, res, next) => {
   try{
     const {id} = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`User not found`, 404);
     const user = await User.findById(id)
     // Hamdling error
     if(!user) throw new HandleError(`User not found`, 404)
-    if(req.user.id == user._id) throw new HandleError(`You can't follow your self -_-`, 400)
-    if(user.followers.includes(req.user.id)) throw new HandleError(`You are already following ${user.first_name} ${user.last_name}`, 409)
-    // add user to followers
-    user.followers.push(req.user.id);
+    if(req.user.id == user._id) throw new HandleError(`You can't follow/unfollow your self -_-`, 400)
+    if(!user.followers.includes(req.user.id)) {
+      // add user to followers
+      user.followers.push(req.user.id);
+      // push notification for followed user
+      const notification = {from: req.user.id, body: "Started following you"}
+      user.notifications.push(notification);
+    }else{
+      // remove user from followers
+      user.followers = user.followers.filter(followerId => followerId != req.user.id);
+    }
     await user.save();
     res.status(200).json(user.followers);
   }catch(e){
@@ -51,7 +58,6 @@ module.exports.followUser = async (req, res, next) => {
     next(e);
   }
 }
-
 module.exports.fetchUserDataProfile = async (req, res, next) => {
   try{
       const {id} = req.params;
