@@ -115,7 +115,7 @@ module.exports.Login = async (req, res, next) => {
         // const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
         const { password, ...userData } = user.toObject();
         res.cookie('c_user', user._id.toString());
-        res.cookie('access_token', token, { httpOnly: true }).status(200).json({...userData, token});
+        res.cookie('access_token', token, { httpOnly: true }).status(200).json({userData});
     }catch(e){
         next(e)
     }
