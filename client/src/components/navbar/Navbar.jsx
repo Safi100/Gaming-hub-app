@@ -58,7 +58,7 @@ function Navbar() {
             <div className="logo">
               <Link to='/' className='logo_a'><img src={Logo} alt="keeplay logo" /></Link>
               <span className='menu_btn'>
-                <IconButton onClick={handleClickNavMenu} size="small" >
+                <IconButton onClick={handleClickNavMenu}    >
                   <MenuIcon sx={{color: '#fff'}}/>
                 </IconButton>
                 <Menu
@@ -101,33 +101,36 @@ function Navbar() {
                 <MenuItem onClick={handleCloseNavMenu}>
                   <Link to={'/'}>Home</Link>
                 </MenuItem>
-                <Divider />
                 <MenuItem onClick={handleCloseNavMenu}>
-                  <Link to={'/'}>Topics</Link>
+                  <Link to={'/'}>Live Player Listings</Link>
                 </MenuItem>
+                { currentUser?.isAdmin && <>
+                  <MenuItem onClick={handleCloseNavMenu}>
+                  <Link to={'/admin/add-new-game'}>Add New Game</Link>
+                </MenuItem>
+                </>
+                }
               </Menu>
               </span>
             </div>
-            <ul className='list_container'>
-              <li><Link to={'/'}>Home</Link></li>
-              
-              <li><Link to={'/'}>Live Player Listings</Link></li>
-            </ul>
           </div>
           <div className="search">
             <SearchIcon color='inherit' />
             <input type="text" />
           </div>
-          <div className="right">            
+          <div className="right">
+          {currentUser &&
+          <>
             <Link to='/chat'>
             <Badge badgeContent={chatContext.unreadCount} max={99} color='success' sx={{cursor:'pointer'}}>
               <ChatBubbleIcon sx={{color:'#fff'}}/>
             </Badge>
             </Link>
-            <Box sx={{ flexGrow: 0 }}>
+            
+              <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleClickUserMenu} size="small" >
-                  <Avatar {...stringAvatar(`${currentUser?.first_name} ${currentUser?.last_name}`)} sx={{bgcolor:'#2e7d32'}}/>
+                  <Avatar {...stringAvatar(`${currentUser.first_name} ${currentUser.last_name}`)} sx={{bgcolor:'#2e7d32'}}/>
                 </IconButton>
               </Tooltip>
             </Box>
@@ -179,6 +182,8 @@ function Navbar() {
                   Logout
                 </MenuItem>
               </Menu>
+            </>
+            }
           </div>
         </div>
         <div className="search mobile_search">
