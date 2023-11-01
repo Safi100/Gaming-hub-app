@@ -7,15 +7,21 @@ export const  AuthContext = createContext([]);
 export function AuthContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null)
   useEffect(() => {
-    if(!Cookies.get('c_user')) return;
+    fetchCurrentUser();
+  }, []);
+  const fetchCurrentUser = () => {
+    if (!Cookies.get('c_user')) return;
     axios.get('http://localhost:8000/api/user/currentUser')
-    .then((res) => {
-      setCurrentUser(res.data)
-    })
-  }, [])
-
+      .then((res) => {
+        setCurrentUser(res.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching user data:', error);
+      });
+  }
+  
   return (
-    <AuthContext.Provider value={{ currentUser }}>
+    <AuthContext.Provider value={{ currentUser, fetchCurrentUser }}>
       {children}
     </AuthContext.Provider>
   );
