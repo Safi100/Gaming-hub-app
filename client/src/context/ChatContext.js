@@ -1,13 +1,22 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Axios from 'axios';
-
+import { AuthContext } from './AuthContext';
+import io from '../components/socket';
 // Create the ChatContext with an initial value of an empty array
 export const ChatContext = createContext([]);
+
 export const ChatContextProvider = ({ children }) => {
-  const navigate = useNavigate()
+
+  // get current user
+  const [currentUser, setCurrentUser] = useState(null);
+  const authContext = useContext(AuthContext);
+  useEffect(() => {
+    setCurrentUser(authContext.currentUser);
+  }, [authContext]);
   const location = useLocation();
   const [conversations, setConversations] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [fetchIntervalId, setFetchIntervalId] = useState(null);
   const [isOnChatPage, setIsOnChatPage] = useState(false);
 
@@ -17,10 +26,13 @@ export const ChatContextProvider = ({ children }) => {
   }, [location]);
 
   useEffect(() => {
-    // Fetch Conversations initially
+    // Fetch Conversations initially and set up the periodic fetch
+    fetchConversations();
+    io.on('new_message', () => {
+      fetchConversations()
+    })
     if (!isOnChatPage) return
     
-    fetchConversations();
     // Set up a periodic fetch every minute
     const intervalId = setInterval(fetchConversations, 60000); // 60000 milliseconds = 1 minute
     setFetchIntervalId(intervalId);
@@ -28,25 +40,31 @@ export const ChatContextProvider = ({ children }) => {
       // Clean up the interval when the component closed
       clearInterval(fetchIntervalId); 
       setIsOnChatPage(false);
+      io.off('new_message')
     };
-  }, [isOnChatPage]);
+  }, [isOnChatPage, currentUser]);
   
-  // Function to fetch Conversations
-  function fetchConversations() {
+// Function to fetch Conversations
+function fetchConversations() {
+  if(currentUser){ 
     Axios.get('http://localhost:8000/api/conversation/conversation-list')
-    .then(res => {
-        setConversations(res.data);
+    .then((res) => {
+      setConversations(res.data);
+      let counter = 0;
+      res.data.forEach((conversation) => {
+        counter += conversation.unreadCount[currentUser?._id];
+      });
+      setUnreadCount(counter);
     })
-    .catch(err => {
-      if(err.response.status === 401) navigate('/')
+    .catch((err) => {
+      console.log(err);
     });
-  };
+  }
+}
+// Return the context value
+const contextValue = { conversations, fetchConversations, unreadCount };
 
-
-  // Return the context value
-  const contextValue = { conversations, fetchConversations };
-
-  return (
+return (
     <ChatContext.Provider value={contextValue}>
       {children}
     </ChatContext.Provider>
@@ -55,6 +73,6 @@ export const ChatContextProvider = ({ children }) => {
 
 // Export the useChat hook
 export const useChat = () => {
-  const { Chat } = useContext(ChatContext);
-  return Chat;
+  const { chat } = useContext(ChatContext);
+  return chat;
 }
