@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ChatContext } from '../../context/ChatContext';
 import Conversation from '../../components/chat/Conversation';
 import Conversation_list from '../../components/chat/Conversation_list';
@@ -8,15 +8,28 @@ import io from '../../components/socket';
 import chatImage from '../../assets/chat_icon.png';
 import './chat.css';
 import CreateGroup from '../../components/chat/CreateGroup';
+import { AuthContext } from '../../context/AuthContext';
 
 const Chat = () => {
+  const navigate = useNavigate();
+    // get current user
+    const [currentUser, setCurrentUser] = useState(null);
+    const authContext = useContext(AuthContext);
+    useEffect(() => {
+      setCurrentUser(authContext.currentUser);
+      if(!authContext.currentUser) navigate('/')
+    }, [authContext]);
+
   const chatContext = useContext(ChatContext)
   const { id } = useParams(); // conversation id
   const [openNewGroupForm, setOpenNewGroupForm] = useState(false);
+  const [conversations, setConversations] = useState([])
   useEffect(() => {
+    setConversations(chatContext.conversations)
     const handleNewMessage = (data) => {
       // Handle new messages here
-      chatContext.fetchConversations()
+      // chatContext.fetchConversations()
+      setConversations(chatContext.conversations);
     };
 
     // Set up the 'new_message' event listener
@@ -26,7 +39,7 @@ const Chat = () => {
       // Clean up the event listener when the component unmounts
       io.off('new_message', handleNewMessage);
     };
-  }, [id]);
+  }, [id, chatContext]);
 
   return (
     <div className='chat_bg'>
@@ -34,7 +47,7 @@ const Chat = () => {
         <div className='side_list'>
           <SearchChatResult />
           <div className='conversations'>
-            {chatContext.conversations.map(conversation => (
+            {conversations?.map(conversation => (
               <Link to={`/chat/${conversation._id}`}  key={`${conversation._id}`} >
                 <Conversation_list conversation={conversation}/>
               </Link>
