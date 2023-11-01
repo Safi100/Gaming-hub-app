@@ -43,7 +43,7 @@ const Conversation_list = ({conversation}) => {
       <div className={`conversation ${conversation._id === id ? 'selected' : ''}`}>
         <div>
           {conversation.type === 'private' ?
-          <Avatar {...stringAvatar(`${conversation.participants[0]?.first_name} ${conversation.participants[0]?.last_name}`)} />
+          <div className='avatar'>{conversation.participants[0]?.avatar ? <img src={conversation.participants[0]?.avatar.url} alt={"user avatar"} /> : <Avatar {...stringAvatar(`${conversation.participants[0]?.first_name} ${conversation.participants[0]?.last_name}`)} />}</div>
           :
           <Avatar sx={{ bgcolor: deepOrange[500] }}><Groups2Icon /></Avatar>        
           }

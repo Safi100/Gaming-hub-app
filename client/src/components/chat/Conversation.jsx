@@ -105,7 +105,16 @@ const Conversation = ({ conversationID }) => {
                         <div className='info'>
                             <div className="avatar">
                                 {conversation.type === 'private' ?
-                                <Avatar variant="square" style={{width:'60px', height:'60px'}} {...stringAvatar(`${conversation.participants.filter(participant => participant._id !== userID).map(participant => `${participant.first_name} ${participant.last_name}`)}`)} />
+                                conversation.participants.filter(participant => participant._id !== userID).map(participant => (
+                                    <>
+                                    {console.log(participant)}
+                                    {participant.avatar ?
+                                    <img src={participant.avatar.url} alt="avatar image" />
+                                    :
+                                    <Avatar variant="square" style={{width:'60px', height:'60px'}} {...stringAvatar(`${participant.first_name} ${participant.last_name}`)} />
+                                    }
+                                    </>
+                                ))
                                 :
                                 <Avatar variant="square" sx={{ bgcolor: deepOrange[500], width:60, height: 60}}><Groups2Icon /></Avatar>        
                                 }

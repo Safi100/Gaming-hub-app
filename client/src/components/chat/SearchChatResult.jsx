@@ -46,7 +46,7 @@ const SearchChatResult = () => {
                     (users.length > 0 ?
                         users.map((user) => (
                             <div className='search_result' onClick={() => FetchOrCreateConversation(user._id)} key={user._id} >
-                              <div className='avatar'>{user.avatar ? "still not" : <Avatar {...stringAvatar(`${user.first_name} ${user.last_name}`)} />}</div>
+                              <div className='avatar'>{user.avatar ? <img src={user.avatar.url} alt={"user avatar"} /> : <Avatar {...stringAvatar(`${user.first_name} ${user.last_name}`)} />}</div>
                               <div className='info'>
                                 <p className='fullName'>{user.first_name} {user.last_name} {user.isAdmin && <span className='admin'>Admin</span>}</p>
                                 <p className='email'>{user.email}</p>

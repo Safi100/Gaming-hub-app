@@ -45,7 +45,7 @@ const GroupParticipants = ({admins, setOpenParticipantsMenu}) => {
                     {group_participants?.map(participant => (
                     <div className='user_result participant_result' key={participant._id}>
                         <div>
-                            <div className='avatar'>{participant.avatar ? "still not" : <Avatar {...stringAvatar(`${participant.first_name} ${participant.last_name}`)} />}</div>
+                        <div className='avatar'>{participant.avatar ? <img src={participant.avatar.url} alt={"user avatar"} /> : <Avatar {...stringAvatar(`${participant.first_name} ${participant.last_name}`)} />}</div>
                             <div className='user_info'>
                                 <p className='fullName'>{participant.first_name} {participant.last_name} 
                                 {userID === participant._id && <span className='sign'>me</span>}

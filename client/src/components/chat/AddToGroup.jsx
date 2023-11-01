@@ -74,7 +74,7 @@ const AddToGroup = ({setOpenAddToGroupForm}) => {
                 <div className='selected_users'>
                   {selectedUsers.map(user => (
                     <div className='user_result' key={user._id}>
-                      <div className='avatar'>{user.avatar ? "still not" : <Avatar {...stringAvatar(`${user.first_name} ${user.last_name}`)} />}</div>
+                      <div className='avatar'>{user.avatar ? <img src={user.avatar.url} alt={"user avatar"} /> : <Avatar {...stringAvatar(`${user.first_name} ${user.last_name}`)} />}</div>
                       <div className='user_info'>
                         <span className='fullName'>{user.first_name} {user.last_name}</span>
                         <span onClick={()=> removeSelectedUsers(user._id)}><CloseIcon /></span>
@@ -87,7 +87,7 @@ const AddToGroup = ({setOpenAddToGroupForm}) => {
                         users.length > 0 ?
                         users.map((user) => (
                             <div className="user_result" onClick={()=> hadleSelectedUsers(user)} key={user._id}>
-                                <div className='avatar'>{user.avatar ? "still not" : <Avatar {...stringAvatar(`${user.first_name} ${user.last_name}`)} />}</div>
+                                <div className='avatar'>{user.avatar ? <img src={user.avatar.url} alt={"user avatar"} /> : <Avatar {...stringAvatar(`${user.first_name} ${user.last_name}`)} />}</div>
                                 <div className='user_info'>
                                   <p className='fullName'>{user.first_name} {user.last_name} {user.isAdmin && <span className='admin'>Admin</span>}</p>
                                   <p className='email'>{user.email}</p>
