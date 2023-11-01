@@ -11,7 +11,6 @@ const Register = () => {
         first_name: '',
         last_name: '',
         email: '',
-        gender: '',
         password: '',
         confirmPassword: '',
         gender: null
@@ -56,7 +55,7 @@ const Register = () => {
         .then((res) => {
             setloading(false)
             e.target.reset();
-            setFormData({ first_name: '', last_name: '', email: '', gender: '', password: '', confirmPassword: '', gender: null});
+            setFormData({ first_name: '', last_name: '', email: '', password: '', confirmPassword: '', gender: null});
             setMessage(res.data.message)
         })
         .catch(err => {
@@ -94,15 +93,15 @@ const Register = () => {
                     <div className='gender_dev'>
                         <label className='Select_gender' htmlFor='genderMale'>
                             <span>Male</span>
-                            <input onChange={handleInputChange} id='genderMale' name='gender' value={'male'} type="radio" />
+                            <input onClick={(e)=> formData.gender=e.target.value} id='genderMale' name='gender' value={'male'} type="radio" />
                         </label>
                         <label className='Select_gender' htmlFor='genderFemale'>
                             <span>Female</span>
-                            <input onChange={handleInputChange} id='genderFemale' name='gender' value={'female'} type="radio" />
+                            <input onClick={(e)=> formData.gender=e.target.value} id='genderFemale' name='gender' value={'female'} type="radio" />
                         </label>
                         <label className='Select_gender' htmlFor='GenderNull'>
                             <span>Prefer not to say</span>
-                            <input onChange={handleInputChange} id='GenderNull' name='gender' value={''} type="radio" />
+                            <input onClick={(e)=> formData.gender= e.target.value} id='GenderNull' name='gender' value={''} type="radio" />
                         </label>
                     </div>
                     </div>
