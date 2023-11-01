@@ -1,10 +1,11 @@
-import {React, useState} from 'react';
+import {React, useContext, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import './auth.css'
 import Axios from 'axios'
 import AuthLoading from '../../components/loading/AuthLoading';
-
+import { AuthContext } from '../../context/AuthContext';
 const Login = () => {
+    const authContext = useContext(AuthContext)
     const navigate = useNavigate()
     const [loading, setloading] = useState(false)
     const [error, setError] = useState('')
@@ -36,6 +37,7 @@ const Login = () => {
         Axios.post('http://localhost:8000/api/auth/login', formData)
         .then((res) => {
             setloading(false)
+            authContext.fetchCurrentUser()
             navigate('/')
         })
         .catch(err => {
