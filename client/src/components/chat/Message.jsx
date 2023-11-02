@@ -25,7 +25,7 @@ const Message = ({message, isGroup}) => {
         <>
         {!loading &&
             <div className={`${ !loading && message.isFromSystem ? "system": (message.sender._id === userID ? 's' : 'r') }`} >
-                {isGroup && !message.isFromSystem && message.sender._id !== userID && <div className='avatar'><Avatar {...stringAvatar(`${message.sender.first_name} ${message.sender.last_name}`)} /></div>}
+                {isGroup && !message.isFromSystem && message.sender._id !== userID && <div className='avatar'>{message.sender.avatar ? <img src={message.sender.avatar.url} alt="user avatar image" /> : <Avatar {...stringAvatar(`${message.sender.first_name} ${message.sender.last_name}`)} />}</div>}
                 <div className='message'>
                     {isGroup && !message.isFromSystem && <>{message.sender._id !== userID && <span className='sender_name'>{message.sender.first_name} {message.sender.last_name} </span>}</>}
                     <p dangerouslySetInnerHTML={{ __html: formattedText }} />

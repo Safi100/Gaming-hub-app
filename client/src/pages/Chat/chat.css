@@ -264,6 +264,13 @@
 .message p{
     overflow-wrap: break-word;
 }
+.messages .avatar{
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    overflow: hidden;
+}
 .s, .r, .system{
     width: 100%;
     display: flex;
@@ -297,7 +304,7 @@
     margin-bottom: 10px;
 }
 .message .message_date{
-    margin-top: 15px;
+    margin-top: 15px !important;
     font-size: 12px;
 }
 .message_input{
