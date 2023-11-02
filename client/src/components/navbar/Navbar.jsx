@@ -174,7 +174,8 @@ function Navbar() {
               <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleClickUserMenu} size="small" >
-                  <Avatar {...stringAvatar(`${currentUser.first_name} ${currentUser.last_name}`)} sx={{bgcolor:'#2e7d32'}}/>
+                {currentUser.avatar ? <img className='avatar_image' src={currentUser.avatar.url} alt="avatar image" /> : <Avatar {...stringAvatar(`${currentUser.first_name} ${currentUser.last_name}`)} sx={{bgcolor:'#2e7d32'}}/>}
+                
                 </IconButton>
               </Tooltip>
             </Box>

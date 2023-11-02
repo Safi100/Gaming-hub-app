@@ -98,7 +98,16 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
 }
-
+.avatar_image{
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    object-fit: cover;
+    object-position: center;
+    -o-object-fit: cover;
+    -o-object-position: center;
+}
 /* user */
 .userResult {
     display: flex;
