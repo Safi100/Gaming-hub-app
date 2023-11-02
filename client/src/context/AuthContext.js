@@ -19,9 +19,14 @@ export function AuthContextProvider({ children }) {
         console.error('Error fetching user data:', error);
       });
   }
-  
+  const logout = () => {
+    axios.post('http://localhost:8000/api/auth/logout')
+    .then(() => setCurrentUser(null))
+    .catch((err) => console.log(err))
+  }
+
   return (
-    <AuthContext.Provider value={{ currentUser, fetchCurrentUser }}>
+    <AuthContext.Provider value={{ currentUser, fetchCurrentUser, logout }}>
       {children}
     </AuthContext.Provider>
   );
