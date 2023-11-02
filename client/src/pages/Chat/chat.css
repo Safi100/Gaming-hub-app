@@ -199,7 +199,7 @@
     width: 60px;
     height: 60px;
 }
-.avatar img{
+.chat_container .avatar img{
     width: 100%;
     height: 100%;
     object-fit: fill;
