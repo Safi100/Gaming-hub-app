@@ -79,13 +79,13 @@ app.post('/api/search', async (req, res, next) => {
               input: {
                 $concat: ["$first_name", " ", "$last_name"] // Concatenate first_name and last_name
               },
-              regex: new RegExp(q, "i") // Search for the full name
+              regex: new RegExp(q.trim(), "i") // Search for the full name
             }
           }
       }]
     }).select(['_id', 'avatar', 'first_name', 'last_name', 'isAdmin', 'email']);
     // games
-    const games = await Game.find({title: { $regex: new RegExp(q, "i") }}).select(['title', 'main_photo'])
+    const games = await Game.find({title: { $regex: new RegExp(q.trim(), "i") }}).select(['title', 'main_photo', 'genres'])
     // push all users and games to array and sort
     for(let i = 0; i < users.length; i++){
       data.push({
@@ -102,6 +102,7 @@ app.post('/api/search', async (req, res, next) => {
         title: games[i].title,
         _id: games[i]._id,
         main_photo: games[i].main_photo,
+        genres: games[i].genres
       })
     }
     // sort data (games and users) by title
