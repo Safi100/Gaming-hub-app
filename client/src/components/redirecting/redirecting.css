@@ -10,6 +10,5 @@
     background: #1f212e;
 }
 .NotAuthorize a, .NotLoggedIn a{
-    color: yellow;
-    text-decoration: none;
+    color: yellow !important;
 }
