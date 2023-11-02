@@ -36,17 +36,32 @@
     gap: 20px;
 }
 .navbar_container .search{
+    position: relative;
     display: flex;
     width: 100%;
     max-width: 400px;
-    overflow: hidden;
-    position: relative;
     background: #3a3b3c;
     border-radius: 50px;
     align-items: center;
     padding-left: 10px;
     color: #fff;
     height: 40px;
+}
+.header_search_result{
+    position: absolute;
+    background: #3a3b3c;
+    width: 100%;
+    top: 120%;
+    left: 0;
+    border-radius: 5px;
+    height: 250px;
+    overflow-y: auto;
+}
+.header_search_result .no_reuslt{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 .navbar_container .search input{
     width: 100%;
@@ -70,4 +85,59 @@
         margin-top: 20px;
         max-width: 100%;
     }
+}
+
+/* search results */
+.userResult:hover, .gameResult:hover{
+    background: #303030;
+}
+.userResult .title, .gameResult .title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
+
+/* user */
+.userResult {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 5px 10px;
+}
+
+.userResult .admin{
+    background: rgb(109, 109, 109);
+    padding: 1px 5px;
+    font-size: 12px;
+    border-radius: 5px;
+}
+.userResult .image{
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.image img{
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    object-position: center;
+}
+/* game */
+.gameResult {
+    display: flex;
+    gap: 10px;
+    padding: 5px 10px;
+}
+.gameResult .image{
+    width: 40px;
+    min-width: 40px;
+    height: 70px;
+    overflow: hidden;
+}
+.gameResult .image img{
+    object-fit: contain;
 }

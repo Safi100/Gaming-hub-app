@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'; // Import useState
 import { Link } from 'react-router-dom'
+import Axios from 'axios'
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
@@ -8,16 +9,20 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import SearchIcon from '@mui/icons-material/Search';
-import { stringAvatar } from '../avatar';
 import Badge from '@mui/material/Badge';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import Logout from '@mui/icons-material/Logout';
+import { stringAvatar } from '../avatar';
+import Loading from '../loading/Loading';
 import { AuthContext } from '../../context/AuthContext'; 
 import { ChatContext } from '../../context/ChatContext'; 
 import Logo from '../../assets/logo.png';
 import './navbar.css'
+// SEARCH RESULTS
+import UserSearch from '../search/UserSearch';
+import GameSearch from '../search/GameSearch';
 
 function Navbar() {
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -42,13 +47,36 @@ function Navbar() {
   // get current user
   const [currentUser, setCurrentUser] = useState(null);
   const authContext = useContext(AuthContext);
-  
   useEffect(() => {
     setCurrentUser(authContext.currentUser);
   }, [authContext]);
-  
+  // logout user
+  const handleLogoutAndCloseMenu = () => {
+    authContext.logout(); // Call the logout method from authContext
+    handleCloseUserMenu(); // Close the user menu
+  };
+
   const chatContext = useContext(ChatContext);
 
+  // search
+  const handleSearch = (e) => {
+    const text = e.target.value.trimStart();
+    setSearch(text);
+  }
+  const [search, setSearch] = useState('');
+  const [search_result, setSearch_result] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    if(search.length > 0) {
+      setLoading(true);
+      Axios.post(`http://localhost:8000/api/search?q=${search}`)
+      .then(res => {
+        setSearch_result(res.data);
+        setLoading(false);
+      })
+      .catch(err => console.log(err))
+    }
+  }, [search]);
 
   return (
     <div className="navbar_container">
@@ -58,7 +86,7 @@ function Navbar() {
             <div className="logo">
               <Link to='/' className='logo_a'><img src={Logo} alt="keeplay logo" /></Link>
               <span className='menu_btn'>
-                <IconButton onClick={handleClickNavMenu}    >
+                <IconButton onClick={handleClickNavMenu} >
                   <MenuIcon sx={{color: '#fff'}}/>
                 </IconButton>
                 <Menu
@@ -104,22 +132,38 @@ function Navbar() {
                 <MenuItem onClick={handleCloseNavMenu}>
                   <Link to={'/'}>Live Player Listings</Link>
                 </MenuItem>
-                { currentUser?.isAdmin && <>
+                { currentUser?.isAdmin &&
                   <MenuItem onClick={handleCloseNavMenu}>
                   <Link to={'/admin/add-new-game'}>Add New Game</Link>
                 </MenuItem>
-                </>
                 }
               </Menu>
               </span>
             </div>
           </div>
-          <div className="search">
+          <div className="search header_search">
             <SearchIcon color='inherit' />
-            <input type="text" />
+            <input value={search} onChange={(handleSearch)} type="text" placeholder='Search...' />
+            {search.length > 0 &&
+              <div className="header_search_result">
+              {loading ? <Loading /> :
+                <>
+                {search_result.length > 0 ?
+                  search_result.map((result) =>
+                    <div className="result" onClick={()=> setSearch('')} key={result._id} >
+                      {result.isUser ? <UserSearch user={result} /> : <GameSearch game={result} />}
+                    </div>
+                  ) 
+                  :
+                  <h2 className='no_reuslt'>No Result...</h2>
+                }
+                </>
+                }
+              </div>
+            }
           </div>
           <div className="right">
-          {currentUser &&
+          {currentUser ?
           <>
             <Link to='/chat'>
             <Badge badgeContent={chatContext.unreadCount} max={99} color='success' sx={{cursor:'pointer'}}>
@@ -175,7 +219,7 @@ function Navbar() {
                   <Avatar /> Profile
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={handleCloseUserMenu}>
+                <MenuItem onClick={handleLogoutAndCloseMenu}>
                   <ListItemIcon>
                     <Logout fontSize="small" sx={{color:'#fff'}} />
                   </ListItemIcon>
@@ -183,12 +227,34 @@ function Navbar() {
                 </MenuItem>
               </Menu>
             </>
+            :
+            <>
+              <Link to='/login'>Login</Link>
+              <Link to='/register'>Register</Link>
+            </>
             }
           </div>
         </div>
-        <div className="search mobile_search">
+        <div className="search mobile_search header_search">
             <SearchIcon color='inherit' />
-            <input type="text" />
+            <input className='header_search' value={search} onChange={(handleSearch)} type="text" placeholder='Search...' />
+            {search.length > 0 &&
+              <div className="header_search_result">
+              {loading ? <Loading /> :
+                <>
+                {search_result.length > 0 ?
+                  search_result.map((result) =>
+                    <div className="result" onClick={()=> setSearch('')} key={result._id} >
+                      {result.isUser ? <UserSearch user={result} /> : <GameSearch game={result} />}
+                    </div>
+                  ) 
+                  :
+                  <h2 className='no_reuslt'>No Result...</h2>
+                }
+                </>
+                }
+              </div>
+            }
         </div>
       </div>
     </div>
