@@ -51,6 +51,7 @@ module.exports.follow_unfollow_user = async (req, res, next) => {
       // remove user from followers
       user.followers = user.followers.filter(followerId => followerId != req.user.id);
     }
+    await user.populate({path: 'followers', select: ['first_name', 'last_name', 'avatar', 'email', 'isAdmin']})
     await user.save();
     res.status(200).json(user.followers);
   }catch(e){
@@ -62,7 +63,8 @@ module.exports.fetchUserDataProfile = async (req, res, next) => {
   try{
       const {id} = req.params;
       if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`User not found`, 404);
-      const user = await User.findById(id).select(['-isVerified', '-password', '-updatedAt']);
+      const user = await User.findById(id).select(['-isVerified', '-password', '-updatedAt'])
+      .populate({path: 'followers', select: ['first_name', 'last_name', 'avatar', 'email', 'isAdmin']})
       if(!user) throw new HandleError(`User not found`, 404)
       res.status(200).json(user);
   }catch(e){
