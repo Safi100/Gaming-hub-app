@@ -48,6 +48,28 @@ const userSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'User'
         }
+    ],
+    favorite_games: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Game'  
+        }
+    ],
+    notifications: [
+        {
+            from: {
+                type: Schema.Types.ObjectId,
+                ref: 'User'
+            },
+            // about: {
+            //     type: String,
+            //     enum: ['follow', 'post', 'comment', 'reply']
+            // },
+            body: {
+                type: String,
+                required: true
+            }
+        }
     ]
 }, {timestamps: true})
 
