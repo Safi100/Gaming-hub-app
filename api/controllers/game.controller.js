@@ -1,8 +1,8 @@
 const Game = require('../models/game.model');
+const User = require('../models/user.model');
 const { cloudinary } = require('../utils/cloudinary');
 const mongoose = require('mongoose');
 const HandleError = require('../utils/HandleError');
-
 module.exports.createGame = async (req, res, next) => {
     try{
         const { title, platforms, releaseDate, about_this_game, 
@@ -105,6 +105,17 @@ module.exports.updateGame = async (req, res, next) => {
         next(e);
     }
 }
+module.exports.fetchGameToEdit = async (req, res, next) => {
+    try{
+        const {id} = req.params
+        if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Game not found`, 404);
+        const game = await Game.findById(id)
+        if(!game) throw new HandleError(`Game not found`, 404);
+        res.status(200).json(game);
+    }catch(e){
+        next(e);
+    }
+}
 module.exports.fetchAllGames = async (req, res, next) => {
     try{
         const games = await Game.find()
@@ -114,13 +125,28 @@ module.exports.fetchAllGames = async (req, res, next) => {
         next(e);
     }
 }
-module.exports.fetchGameToEdit = async (req, res, next) => {
+// todo 
+module.exports.fetchGameProfile = async (req, res, next) => {
+}
+module.exports.toggle_favorite_game = async (req, res, next) => {
     try{
         const {id} = req.params
+        const currentUser = await User.findById(req.user.id)
+        if(!currentUser) throw new HandleError(`Current user not found`, 404)
         if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Game not found`, 404);
         const game = await Game.findById(id)
         if(!game) throw new HandleError(`Game not found`, 404);
-        res.status(200).json(game);
+        if(!currentUser.favorite_games.includes(game._id)) {
+            // add game to favorites
+            currentUser.favorite_games.push(game._id)
+        }else{
+            // remove game from favorites
+            console.log(game._id);
+            console.log(currentUser.favorite_games[0]);
+            currentUser.favorite_games = currentUser.favorite_games.filter(gameID => !gameID.equals(game._id));
+        }
+        await currentUser.save();
+        res.status(200).json(currentUser.favorite_games)
     }catch(e){
         next(e);
     }
