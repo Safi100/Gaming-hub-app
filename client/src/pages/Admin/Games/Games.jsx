@@ -1,3 +1,4 @@
+import { useNavigate, useLocation } from 'react-router-dom';
 import {useState, useEffect, useContext} from 'react';
 import Axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
@@ -7,7 +8,6 @@ import { AuthContext } from '../../../context/AuthContext';
 import Pagination from '@mui/material/Pagination';
 import SearchIcon from '@mui/icons-material/Search';
 import './games.css'
-import { useNavigate, useLocation } from 'react-router-dom';
 
 const Games = () => {
     const navigate = useNavigate();
@@ -40,8 +40,6 @@ const Games = () => {
          }else{
             navigate(`?page=${value}`);
         }
-        // Scroll to the top of the page
-        window.scrollTo(0, 0);
       };
 
     // fetch games
@@ -59,7 +57,11 @@ const Games = () => {
         })
         
     }, [authContext.currentUser, page, search])
-    
+    // delete game
+    // todo : later
+    const deleteGame = (gameID) => {
+
+    }
     return (
         loading ? <PageLoading /> :
         <>
@@ -74,6 +76,7 @@ const Games = () => {
                     <input type="text" value={search} onChange={handleSeachInput} placeholder='Search for game...' />
                     </div>
                 <div className="games">
+                    {games.length === 0 && <h2>No Games on page {page} yet...</h2>}
                     {games.map((game) => (
                         <div className="game" key={game._id}>
                             <div className="game_image"><img loading='lazy' src={game.main_photo.url} alt={`${game.title} image`} /></div>
@@ -83,6 +86,7 @@ const Games = () => {
                                 <p><span>Release Date:</span> {game.release_date}</p>
                                 <p><span>Platforms:</span> {game.platforms}</p>
                                 <div className="buttons">
+                                    <a href={`/game/${game._id}`}>Go to game group</a>
                                     <a href={`/admin/edit-game/${game._id}`} >Edit Game</a>
                                     <button>Delete Game</button>
                                 </div>
