@@ -137,6 +137,11 @@ function Navbar() {
                   <Link to={'/admin/add-new-game'}>Add New Game</Link>
                 </MenuItem>
                 }
+                { currentUser?.isAdmin &&
+                  <MenuItem onClick={handleCloseNavMenu}>
+                  <Link to={'/admin/games-control'}>Games Control</Link>
+                </MenuItem>
+                }
               </Menu>
               </span>
             </div>
@@ -217,7 +222,9 @@ function Navbar() {
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                 >
                 <MenuItem onClick={handleCloseUserMenu}>
-                  <Avatar /> Profile
+                  <Link to={`/profile/${currentUser._id}`} style={{display:"flex", alignItems:'center'}}>
+                    <Avatar /> Profile
+                    </Link>
                 </MenuItem>
                 <Divider />
                 <MenuItem onClick={handleLogoutAndCloseMenu}>
