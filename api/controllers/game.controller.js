@@ -116,17 +116,36 @@ module.exports.fetchGameToEdit = async (req, res, next) => {
         next(e);
     }
 }
-module.exports.fetchAllGames = async (req, res, next) => {
+module.exports.fetchGamesToControl = async (req, res, next) => {
     try{
-        const games = await Game.find()
-
-        res.send(games);
+        const games_per_page = 5 // 5 games per page
+        const page = req.query.page || 1; // number of page, initial is 1 
+        const skip = (page - 1) * games_per_page // skip of games when fetch
+        const {title} = req.query;
+        let query = {};
+        if (title) {
+            const titleName = title;    
+            const regex = new RegExp(titleName, "i");
+            query.title = regex;
+        }
+        const GamesCount = await Game.countDocuments(query) // number of all games that fetched
+        const games = await Game.find(query).limit(games_per_page).skip(skip).sort({ title: 1 }); // fetch 5 games
+        const Counts_of_Pages = Math.ceil(GamesCount / games_per_page) // Round up to nearest integer
+        res.status(200).json({games, Counts_of_Pages});
     }catch(e){
         next(e);
     }
 }
-// todo 
 module.exports.fetchGameProfile = async (req, res, next) => {
+    try{
+        const {id} = req.params
+        if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Game not found`, 404);
+        const game = await Game.findById(id);
+        if(!game) throw new HandleError(`Game not found`, 404);
+        res.status(200).json(game);
+    }catch(e) {
+        next(e);
+    }
 }
 module.exports.toggle_favorite_game = async (req, res, next) => {
     try{
@@ -141,8 +160,6 @@ module.exports.toggle_favorite_game = async (req, res, next) => {
             currentUser.favorite_games.push(game._id)
         }else{
             // remove game from favorites
-            console.log(game._id);
-            console.log(currentUser.favorite_games[0]);
             currentUser.favorite_games = currentUser.favorite_games.filter(gameID => !gameID.equals(game._id));
         }
         await currentUser.save();
