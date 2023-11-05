@@ -60,7 +60,6 @@ const EditGame = () => {
 
     // fetch the game data 
     useEffect(() => {
-      if(!authContext.currentUser || !authContext.currentUser.isAdmin) return;
         Axios.get(`http://localhost:8000/api/game/fetch-game-to-edit/${id}`)
         .then(res => {
             setLoading(false);
@@ -88,7 +87,7 @@ const EditGame = () => {
         .catch(err => {
             setError(err.response.data)
             setLoading(false);
-            // console.log(err)
+            console.log(err)
         })
     }, [id, authContext.currentUser])
     // input change event
@@ -152,12 +151,12 @@ const EditGame = () => {
     };
   
     return (
+      loading ? <PageLoading /> :
       (!authContext.currentUser || !authContext.currentUser.isAdmin) ? <NotAuthorize /> :
       <>
       <ToastContainer/>
       <div className="wrapper">
-        {loading ? <PageLoading /> :
-        error ? <h2 className='text-danger my-5 fs-1'>{error}</h2> :
+        {error ? <h2 className='text-danger my-5 fs-1'>{error}</h2> :
       <Form className='editGameForm text-white' noValidate validated={validated} onSubmit={handleSubmit} encType="multipart/form-data">
         <h2 className='mb-12'>Edit {formData.title}</h2>
         <Row className="mb-3 row-gap-3">
@@ -291,7 +290,7 @@ const EditGame = () => {
         </> }
         </Button>
       </Form>
-        }
+      }
       </div>
       </>
     );
