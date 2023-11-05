@@ -1,0 +1,83 @@
+.games-control{
+    padding: 20px 0;
+}
+.games-control .search_game{
+    display: flex;
+    align-items: center;
+    max-width: 350px;
+    margin-bottom: 20px;
+    background: #3a3b3c;
+    padding-left: 10px;
+    border-radius: 5px;
+}
+.games-control .search_game input{
+    width: 100%;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    padding: 10px;
+    color: inherit;
+}
+.games-control .search_game input::placeholder{
+    color: #ffffffc7;
+}
+.games-control .games{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.games .game{
+    display: flex;
+    border: 1px solid #3a3b3c;
+}
+.game .game_image{
+    width: 200px;
+    min-width: 200px;
+}
+.game_image img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.game .game_info{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 20px;
+    color: #fff;
+}
+.game_info h2{
+    margin-bottom: 20px;
+}
+.game_info p{
+    margin-bottom: 15px !important;
+}
+.game_info p span{
+    font-weight: 700;
+}
+.game_info .buttons{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-top: 25px;
+}
+.game_info .buttons button, .buttons a {
+    cursor: pointer;
+    color: #fff;
+    border: 0;
+    font-size: 15px;
+    padding: 10px;
+    border-radius: 5px;
+}
+.game_info .buttons button{
+    background: #dc3545;
+}
+.game_info .buttons a{
+    background-color: #17a2b8;
+}
+.games-control .pagination{
+    margin: 50px 0;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
