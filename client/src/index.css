@@ -2,25 +2,23 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #1f212e !important;
+  background: #18191a !important;
+  color: #fff !important;
 }
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+p{
+  margin: 0 !important;
 }
 a{
-  text-decoration: none;
+  text-decoration: none !important;
+  color: inherit !important;
 }
-
+/* blur background */
 .blur{
   position: fixed;
   width: 100%;
@@ -32,8 +30,26 @@ a{
   align-items: center;
   justify-content: center;
 }
+/* wrapper */
 .wrapper{
   width: 90%;
   max-width: 1200px;
   margin: 0 auto;
+}
+li{
+  list-style: none;
+}
+/* pagination */
+.whiteTextPagination .MuiPaginationItem-page {
+  color: #fff; /* Change the text color to white */
+}
+.whiteTextPagination .MuiPaginationItem-icon {
+  color: #fff; /* Change the arrow color to black */
+}
+.css-10w330c-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected{
+  
+  background-color: #77c31d !important;
+}
+.whiteTextPagination .MuiPaginationItem-text{
+  color: #fff;
 }
