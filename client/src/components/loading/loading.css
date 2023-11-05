@@ -42,7 +42,7 @@
     width: 50px;
     height: 25px;
     clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
-    background: #c5da0d;
+    background: #77c31d;
     transform: translateX(0);
     z-index: 2;
   }
