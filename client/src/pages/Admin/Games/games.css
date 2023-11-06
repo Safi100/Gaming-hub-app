@@ -52,16 +52,16 @@
 .game_info p{
     margin-bottom: 15px !important;
 }
-.game_info p span{
+.game .game_info p span{
     font-weight: 700;
 }
-.game_info .buttons{
+.game .game_info .buttons{
     display: flex;
     gap: 20px;
     align-items: center;
     margin-top: 25px;
 }
-.game_info .buttons button, .buttons a {
+.game .game_info .buttons button, .buttons a {
     cursor: pointer;
     color: #fff;
     border: 0;
@@ -69,7 +69,7 @@
     padding: 10px;
     border-radius: 5px;
 }
-.game_info .buttons button{
+.game .game_info .buttons button{
     background: #dc3545;
 }
 .game_info .buttons a{
