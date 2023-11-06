@@ -222,25 +222,25 @@ const EditGame = () => {
                 <h2 className='fs-4 mb-4'>Minimum Requirements</h2>
                 <Form.Group as={Col} className='mb-3' md="12" controlId="validationCustom08">
                     <Form.Label>OPERATING SYSTEM (OS)</Form.Label>
-                    <Form.Control name="max_os" value={formData.max_os} onChange={handleInputChange} required type="text" placeholder='Example: 64-bit Windows 7 / Windows 10' />
+                    <Form.Control name="min_os" value={formData.min_os} onChange={handleInputChange} required type="text" placeholder='Example: 64-bit Windows 7 / Windows 10' />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type="invalid">Please provide an OS.</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group as={Col} md="12" className='mb-3' controlId="validationCustom10">
                     <Form.Label>PROCESSOR</Form.Label>
-                    <Form.Control name="max_processor" value={formData.max_processor} onChange={handleInputChange} required type="text" placeholder='Example: Intel Core i5-750, 2.66 GHz / AMD Phenom II X4 965, 3.4 GHz or AMD Ryzen™ 3 1200, 3.1 GHz' />
+                    <Form.Control name="min_processor" value={formData.min_processor} onChange={handleInputChange} required type="text" placeholder='Example: Intel Core i5-750, 2.66 GHz / AMD Phenom II X4 965, 3.4 GHz or AMD Ryzen™ 3 1200, 3.1 GHz' />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type="invalid">Please provide a proccessor.</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group as={Col} md="12" className='mb-3' controlId="validationCustom12">
                     <Form.Label>MEMORY</Form.Label>
-                    <Form.Control name="max_memory" value={formData.max_memory} onChange={handleInputChange} required type="text" placeholder='Example: 8 GB RAM' />
+                    <Form.Control name="min_memory" value={formData.min_memory} onChange={handleInputChange} required type="text" placeholder='Example: 8 GB RAM' />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type="invalid">Please provide a memory size.</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group as={Col} md="12" className='mb-3' controlId="validationCustom14">
                     <Form.Label>GRAPHICS CARD</Form.Label>
-                    <Form.Control name="max_graphics_card" value={formData.max_graphics_card} onChange={handleInputChange} required type="text" placeholder='Example: NVIDIA® GeForce™ GTX 670 or NVIDIA® GeForce™ GTX 1050 / AMD® Radeon™ HD 7950 or AMD® Radeon™ R9 270' />
+                    <Form.Control name="min_graphics_card" value={formData.min_graphics_card} onChange={handleInputChange} required type="text" placeholder='Example: NVIDIA® GeForce™ GTX 670 or NVIDIA® GeForce™ GTX 1050 / AMD® Radeon™ HD 7950 or AMD® Radeon™ R9 270' />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type="invalid">Please provide a graphic card.</Form.Control.Feedback>
                 </Form.Group>
@@ -249,25 +249,25 @@ const EditGame = () => {
                 <h2 className='fs-4 mb-4'>Recommended Requirements</h2>
                 <Form.Group as={Col} md="12" className='mb-3' controlId="validationCustom09">
                     <Form.Label>OPERATING SYSTEM (OS)</Form.Label>
-                    <Form.Control name="min_os" value={formData.min_os} onChange={handleInputChange} required type="text" placeholder='Example: 64-bit Windows 7 / Windows 10' />
+                    <Form.Control name="max_os" value={formData.max_os} onChange={handleInputChange} required type="text" placeholder='Example: 64-bit Windows 7 / Windows 10' />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type="invalid">Please provide an OS.</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group as={Col} md="12" className='mb-3' controlId="validationCustom11">
                     <Form.Label>PROCESSOR</Form.Label>
-                    <Form.Control name="min_processor" value={formData.min_processor} onChange={handleInputChange} required type="text" placeholder='Example: Intel Core i5-2300, 2.8 GHz / AMD FX-6300, 3.5GHz or AMD Ryzen™ 5 1400, 3.2 GHz' />
+                    <Form.Control name="max_processor" value={formData.max_processor} onChange={handleInputChange} required type="text" placeholder='Example: Intel Core i5-2300, 2.8 GHz / AMD FX-6300, 3.5GHz or AMD Ryzen™ 5 1400, 3.2 GHz' />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type="invalid">Please provide a proccessor.</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group as={Col} md="12" className='mb-3' controlId="validationCustom13">
                     <Form.Label>MEMORY</Form.Label>
-                    <Form.Control name="min_memory" value={formData.min_memory} onChange={handleInputChange} required type="text" placeholder='Example: 16 GB RAM' />
+                    <Form.Control name="max_memory" value={formData.max_memory} onChange={handleInputChange} required type="text" placeholder='Example: 16 GB RAM' />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type="invalid">Please provide a memory size.</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group as={Col} md="12" className='mb-3' controlId="validationCustom15">
                     <Form.Label>GRAPHICS CARD</Form.Label>
-                    <Form.Control name="min_graphics_card" value={formData.min_graphics_card} onChange={handleInputChange} required type="text" placeholder='Example: NVIDIA® GeForce™ GTX 780 or NVIDIA® GeForce™ GTX 1060-6GB / AMD® Radeon™ R9 290 or RX 570' />
+                    <Form.Control name="max_graphics_card" value={formData.max_graphics_card} onChange={handleInputChange} required type="text" placeholder='Example: NVIDIA® GeForce™ GTX 780 or NVIDIA® GeForce™ GTX 1060-6GB / AMD® Radeon™ R9 290 or RX 570' />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type="invalid">Please provide a graphic card.</Form.Control.Feedback>
                 </Form.Group>
