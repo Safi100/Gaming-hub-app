@@ -1,0 +1,87 @@
+.user_profile{
+    padding: 30px 0;
+}
+.user_profile .error{
+    color: red;
+}
+.user_profile .profile_header{
+    display: flex;
+    gap: 20px;
+    background: #242526;
+    border-radius: 10px;
+    padding: 20px;
+    color: #fff;
+}
+.profile_header .avatar{
+    width: 200px;
+    height: 200px;
+    min-width: 100px;
+}
+.profile_header .avatar > *{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.profile_header .user_info{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.user_info .user_full_name{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.user_info .admin{
+    font-size: 14px;
+    background: rgb(74, 74, 74);
+    padding: 3px;
+    border-radius: 5px;
+}
+.user_info .follow_div{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.follow_div .follow_status_btn{
+    cursor: pointer;
+    padding: 2px 5px;
+    border: 0;
+    border-radius: 5px;
+}
+.follow_status_btn.unfollow{
+    background: #dc3545;
+    color: #fff;
+}
+.user_info .buttons{
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+}
+.user_info .buttons button {
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 100px;
+    justify-content: center;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 0;
+}
+.user_info .buttons button:first-child{
+    background: #0d6efd;
+    color: #fff;
+}
+.user_info .buttons button:last-child{
+    background: #dc3545;
+    color: #fff;
+}
+.user_info .user_info .edit_btn{
+    cursor: pointer;
+    background: #0d6efd;
+    border-radius: 5px;
+    border: 0;
+    padding: 5px 10px;
+}
