@@ -1,0 +1,111 @@
+.gameProfile{
+    padding: 10px 0;
+}
+.gameProfile .cover_photo{
+    width: 100%;
+    height: 250px;
+    object-fit: fill;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+.gameProfile .game_info{
+    background: #242526;
+    padding: 0 20px;
+    display: flex;
+    gap: 20px;
+}
+.gameProfile .game_info .main_photo{
+    height: 200px;
+}
+.main_photo img{
+    height: 115%;
+    margin-top: -17px;
+    box-shadow: 1px 1px 10px rgb(255, 255, 255, 42%);
+}
+.gameProfile .game_info .game{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex: 1;
+    padding: 20px 0;
+}
+.gameProfile  .game_info .game_details, .gameProfile .game_info .buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.gameProfile .game_info .buttons{
+    min-width: 130px;
+}
+.game_details .game_properties{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.game_details .game_properties span{
+    font-weight: 700;
+}
+.game .buttons button{
+    padding: 10px;
+    cursor: pointer;
+    width: 152px;
+    border: 0;
+}
+.game .buttons .add_fav{
+    background: #007bff;
+    color: #fff;
+}
+.game .buttons .remove_fav{
+    background: #dc3545;
+    color: #fff;
+}
+/* gameInformation */
+.gameInformation{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #3a3b3c;
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+}
+.gameInformation .header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.header .header_title{
+    font-size: 20px;
+}
+.header .close{
+    cursor: pointer;
+}
+.gameInformation .requirements{
+    margin-top: 30px;
+}
+.requirements .line{
+    height: 1px;
+    background: #fff;
+    margin: 10px 0;
+}
+.requirements .requirements_row{
+    display: flex;
+    gap: 20px;
+}
+.requirements_row > * {
+    flex-basis: 50%;
+}
+.requirements_row h3{
+    margin-bottom: 5px;
+}
+.requirements_row ul{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.requirements_row ul li span{
+    font-weight: 700;
+}
