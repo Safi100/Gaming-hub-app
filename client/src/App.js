@@ -16,6 +16,7 @@ const NewGame = lazy(() => import('./pages/Admin/NewGame/NewGame'));
 const EditGame = lazy(() => import('./pages/Admin/EditGame/EditGame'));
 const UserProfile = lazy(() => import('./pages/userProfile/UserProfile'));
 const GamesControl = lazy(() => import('./pages/Admin/Games/Games'));
+const GameProfile = lazy(() => import('./pages/gameProfile/GameProfile'));
 
 axios.defaults.withCredentials = true;
 
@@ -35,6 +36,9 @@ function App() {
           <Route path="/admin/edit-game/:id" element={<EditGame />} />
           <Route path="/chat/:id" element={<Chat />} /> {/* protected route... later */}
           <Route path="/profile/:id" element={<UserProfile />} />
+          <Route path="/game/:id" element={<GameProfile />} />
+          {/* <Route path="/game/:id" element={<UserProfile />} /> */} // todo: game topics
+          {/* <Route path="/game/:id" element={<UserProfile />} /> */} // todo: add new topic
           <Route path="/reset-password/:id/:token" element={<ResetPassword />} /> 
           <Route path="/verify-email/:id/:token" element={<EmailVerify />} />
           <Route path='*' element={<p>There's nothing here: 404!</p>} />  {/* Not found page... later */}
