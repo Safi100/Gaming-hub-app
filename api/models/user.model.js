@@ -41,7 +41,7 @@ const userSchema = new Schema({
     bio: {
         type: String,
         default: '',
-        maxlength: 500  // Maximum character limit for the bio
+        maxlength: 200  // Maximum character limit for the bio
     },
     followers: [
         {
