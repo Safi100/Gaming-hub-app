@@ -7,7 +7,7 @@ const UserSearch = ({user}) => {
     return (
         <Link className='userResult' to={`/profile/${user._id}`} >
             <div className="image">
-                {user.avatar.url ?
+                {user.avatar && user.avatar.url ?
                 <img src={user.avatar.url} alt={"user avatar"} />
                 :
                 <Avatar {...stringAvatar(`${user.title}`)} />}
