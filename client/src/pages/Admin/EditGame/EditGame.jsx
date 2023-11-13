@@ -2,15 +2,11 @@ import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import PageLoading from '../../../components/loading/PageLoading';
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
+import { Row, Col, Form, Button, Spinner } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import './editGame.css'
 import Axios from 'axios'
-import Spinner from 'react-bootstrap/Spinner';
 import { AuthContext } from '../../../context/AuthContext';
 import NotAuthorize from '../../../components/redirecting/NotAuthorize';
 
@@ -34,6 +30,7 @@ const EditGame = () => {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(true)
     const [updateLoading, setUpdateLoading] = useState(false)
+    const [gameTitle, setGameTitle] = useState('')
     // State variable for input values
     const [mainPhoto, setMainPhoto] = useState('');
     const [coverPhoto, setCoverPhoto] = useState('');
@@ -63,6 +60,7 @@ const EditGame = () => {
         Axios.get(`http://localhost:8000/api/game/fetch-game-to-edit/${id}`)
         .then(res => {
             setLoading(false);
+            setGameTitle(res.data.title);
             setFormData({
                 title: res.data.title,
                 genres: res.data.genres,
@@ -134,6 +132,7 @@ const EditGame = () => {
         // Data.append('coverPhoto', coverPhoto)
         Axios.put(`http://localhost:8000/api/game/${id}`, Data)
         .then(res => {
+          setGameTitle(res.data.title);
           setUpdateLoading(false)
           event.target.reset()
           notify()
@@ -158,7 +157,7 @@ const EditGame = () => {
       <div className="wrapper">
         {error ? <h2 className='text-danger my-5 fs-1'>{error}</h2> :
       <Form className='editGameForm text-white' noValidate validated={validated} onSubmit={handleSubmit} encType="multipart/form-data">
-        <h2 className='mb-12'>Edit {formData.title}</h2>
+        <h2 className='mb-12'>Edit {gameTitle}</h2>
         <Row className="mb-3 row-gap-3">
           <Form.Group as={Col} md="6" controlId="validationCustom01">
             <Form.Label>TITLE</Form.Label>
