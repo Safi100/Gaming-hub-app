@@ -142,8 +142,10 @@ function EditProfile({user, setUser, setOpenEdit}) {
         setPasswordError("Passwords don't match.")
         return;
     }
+      setUpdatePasswordLoading(true);
       Axios.put('http://localhost:8000/api/user/change-password', passwords)
       .then((res) => {
+        setUpdatePasswordLoading(false);
         notifyPass()
         setValidatedPasswordForm(false);
         setPasswords({
@@ -154,6 +156,7 @@ function EditProfile({user, setUser, setOpenEdit}) {
       })
       .catch((err) => {
         setPasswordError(err.response.data)
+        setUpdatePasswordLoading(false);
         setValidatedPasswordForm(false);
         console.log(err)
       })
@@ -170,7 +173,7 @@ function EditProfile({user, setUser, setOpenEdit}) {
         </div>
         <Col xl={4}>
           {/* Profile picture card */}
-          <Card className="mb-4 mb-xl-0 card_box">
+          <Card className="mb-4 mb-xl-0 card_box position-sticky top-0">
             <Card.Header className='text-white border-bottom border-secondary'>Profile Picture</Card.Header>
             <Card.Body className="text-center">
               {/* Profile picture image */}
@@ -284,8 +287,19 @@ function EditProfile({user, setUser, setOpenEdit}) {
               </Form.Group>
             </Col>
             {passwordError && <p className='text-danger'>{passwordError}</p>}
-            <Button className='mt-2' type='submit'>Change password</Button>
-              </Form>
+            <Button type="submit" className='btn-warning mt-2' disabled={updatePasswordLoading} >
+              {updatePasswordLoading === false ? 'Change Password' : <>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+              <span> Loading...</span>
+            </> }
+            </Button>
+            </Form>
             </Card.Body>
           </Card>
         </Col>
