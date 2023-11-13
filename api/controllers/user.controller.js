@@ -1,6 +1,7 @@
 const HandleError = require('../utils/HandleError');
 const mongoose = require('mongoose');
 const User = require('../models/user.model');
+const bcrypt = require('bcrypt');
 const {cloudinary} = require('../utils/cloudinary');
 
 module.exports.fetchCurrentUser = async (req, res, next) => {
@@ -118,7 +119,22 @@ module.exports.removeProfilePicture = async (req, res, next) => {
 }
 module.exports.changePassword = async (req, res, next) => {
   try{
-    
+    console.log(req.body);
+    let {current_password, new_password, confirm_password} = req.body;
+    current_password = current_password.trim();
+    new_password = new_password.trim();
+    confirm_password = confirm_password.trim();
+    if(current_password.length < 6) throw new HandleError('Password must be at least 6 characters', 400);
+    if(new_password.length < 6) throw new HandleError('New password must be at least 6 characters', 400);
+    if(confirm_password !== new_password) throw new HandleError("Passwords don't match", 400);
+    const user = await User.findById(req.user.id);
+    const match = await bcrypt.compare(current_password, user.password);
+    if(!match) throw new HandleError('Password you provided is wrong.', 403)
+    // if correct
+    const hashedPassword = await bcrypt.hash(new_password, 10);
+    user.password = hashedPassword
+    await user.save();
+    res.status(200).send('Password changed successfully.');
   }catch(e){
     next(e)
   }
