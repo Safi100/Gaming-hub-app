@@ -14,7 +14,7 @@
 }
 .profile_header .avatar{
     width: 200px;
-    height: 200px;
+    /* height: 200px; */
     min-width: 100px;
 }
 .profile_header .avatar > *{
@@ -57,9 +57,10 @@
     display: flex;
     gap: 20px;
     margin-top: 10px;
+    color: #000;
 }
 .user_info .buttons button {
-    padding: 3px;
+    padding: 7px;
     display: flex;
     align-items: center;
     gap: 5px;
@@ -70,18 +71,99 @@
     border-radius: 5px;
     border: 0;
 }
-.user_info .buttons button:first-child{
+.user_info .buttons .contact{
     background: #0d6efd;
     color: #fff;
 }
-.user_info .buttons button:last-child{
+.user_info .buttons .report{
     background: #dc3545;
     color: #fff;
 }
-.user_info .user_info .edit_btn{
-    cursor: pointer;
-    background: #0d6efd;
+.user_info .buttons .edit_btn{
+    background: #fff;
+    color: #000;
+    padding: 10px 15px;
     border-radius: 5px;
-    border: 0;
-    padding: 5px 10px;
+}
+/* edit profile */
+.edit_profile{
+    background: #242526;
+    width: 90%;
+    max-width: 1200px;
+    max-height: 90%;
+    overflow-y: auto;
+    margin: 0 auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 20px;
+    z-index: 555;
+}
+.card_box{
+    background: #1e1f20 !important;
+}
+.img-account-profile {
+    width: 100%;
+    max-width: 361px;
+    margin: 0 auto;
+    height: 250px;
+}
+.img-account-profile > *{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.rounded-circle {
+    border-radius: 50% !important;
+}
+.card {
+    box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
+}
+.card .card-header {
+    font-weight: 500;
+}
+.card-header:first-child {
+    border-radius: 0.35rem 0.35rem 0 0;
+}
+.card-header {
+    padding: 1rem 1.35rem;
+    margin-bottom: 0;
+    background-color: rgba(33, 40, 50, 0.03);
+    border-bottom: 1px solid rgba(33, 40, 50, 0.125);
+}
+.form-control, .dataTable-input {
+    display: block;
+    width: 100%;
+    padding: 0.875rem 1.125rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1;
+    color: #69707a;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #c5ccd6;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.35rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.edit_profile .gender_input .gender_dev{
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.edit_profile .gender_input .Select_gender{
+    flex: 1;    
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 10px;
+    justify-content: space-between;
+    cursor: pointer;
+    min-width: 168px;
+}
+.edit_profile .gender_input span{
+    color: #000;
 }

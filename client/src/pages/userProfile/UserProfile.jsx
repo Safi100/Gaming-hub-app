@@ -7,6 +7,7 @@ import MessageIcon from '@mui/icons-material/Message';
 import { stringAvatar } from '../../components/avatar';
 import { AuthContext } from '../../context/AuthContext'; 
 import './userProfile.css'
+import EditProfile from './EditProfile';
 
 const UserProfile = () => {
     const navigate = useNavigate()
@@ -21,8 +22,10 @@ const UserProfile = () => {
     const [user, setUser] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
+    const [openEdit, setOpenEdit] = useState(false);
     // fetch user profile data
     useEffect(() => {
+        setOpenEdit(false)
         setError('')
         setLoading(true)
         Axios.get(`http://localhost:8000/api/user/profile/${id}`)
@@ -42,7 +45,7 @@ const UserProfile = () => {
     const following_toggle = () => {
         Axios.post(`http://localhost:8000/api/user/toggle-following-user/${user._id}`)
         .then((res) => {
-            // Assuming the response contains the updated followers array only.
+            // response contains the updated followers array only.
             setUser((prevUser) => ({
               ...prevUser,
               followers: res.data,
@@ -93,11 +96,11 @@ const UserProfile = () => {
                         <p>Joined at {new Date(user.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric'})}</p>
                         <div className='buttons'>
                             { (currentUser && currentUser._id !== user._id) && ( <>
-                                <button onClick={() => FetchOrCreateConversation(user._id) } ><MessageIcon /> Contact</button>
-                                <button>Report</button>
+                                <button className='contact' onClick={() => FetchOrCreateConversation(user._id) } ><MessageIcon /> Contact</button>
+                                <button className='report'>Report</button>
                             </> )}
                             { (currentUser && currentUser._id === user._id) && (
-                                <a href={`/profile/edit/${user._id}`} className='edit_btn'>Edit profile</a>
+                                <button className='edit_btn' onClick={()=> setOpenEdit(true)}>Edit profile</button>
                             )}
                         </div>
                     </div>
@@ -114,6 +117,8 @@ const UserProfile = () => {
             }
             </div>
             }
+            {currentUser && currentUser._id === user._id && 
+            (openEdit && <EditProfile  user={user} setUser={setUser} setOpenEdit={setOpenEdit} />) }
         </div>
     );
 }
