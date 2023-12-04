@@ -82,7 +82,7 @@ const Games = () => {
                             <div className="game_image"><img loading='lazy' src={game.main_photo.url} alt={`${game.title} image`} /></div>
                             <div className="game_info">
                                 <h2>{game.title}</h2>
-                                <p>{game.description}</p>
+                                <p dangerouslySetInnerHTML={{ __html: game.description.replace(/\n/g, '<br>')}} />
                                 <p><span>Release Date:</span> {game.release_date}</p>
                                 <p><span>Platforms:</span> {game.platforms}</p>
                                 <div className="buttons">
