@@ -3,13 +3,22 @@ const User = require('../models/user.model');
 const { cloudinary } = require('../utils/cloudinary');
 const mongoose = require('mongoose');
 const HandleError = require('../utils/HandleError');
+module.exports.fetchGamesID = async (req, res, next) => {
+    try{
+        const games = await Game.find().select(['title']);
+        res.status(200).send(games);
+    }catch(e){
+        next(e);
+    }
+}
 module.exports.createGame = async (req, res, next) => {
     try{
         const { title, platforms, releaseDate, about_this_game, 
                 genres, min_os, min_processor, min_memory,
                 min_graphics_card,max_os,max_processor,max_memory,
                 max_graphics_card,
-                } = req.body;
+        } = req.body;
+        
         const minSystemRequirements = {
             type: 'Minimum',
             os: min_os.trim(),
