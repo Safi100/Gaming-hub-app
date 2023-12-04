@@ -85,6 +85,51 @@
     padding: 10px 15px;
     border-radius: 5px;
 }
+.profile_main{
+    display: flex;
+    gap: 30px;
+    justify-content: space-between;
+    /* flex-wrap: wrap; */
+    padding: 30px 0;
+}
+.profile_main .topics{
+    background: red;
+    min-width: 480px;
+    width: 100%;
+}
+.profile_main .about_user{
+    position: sticky;
+    top: 0;
+    min-width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 30%;
+}
+.profile_main .about_user > *{
+    background: #242526;
+    color: #fff;
+}
+.profile_main .card{
+    box-shadow: none;
+}
+.profile_main .about_user .card-header{
+    border-bottom: 1px solid rgba(118, 118, 118, 0.245);
+}
+@media screen and (max-width: 960px) {
+    .profile_main{
+        flex-wrap: wrap;
+    }
+    .profile_main .about_user{
+        order: -1;
+        flex-direction: row;
+        width: 100%;
+        /* flex-wrap: wrap; */
+    }
+    .profile_main .about_user > * {
+        flex-basis: calc(100% / 2);
+    }
+}
 /* edit profile */
 .edit_profile{
     background: #242526;

@@ -106,11 +106,23 @@ const UserProfile = () => {
                     </div>
                 </div>
                 <div className='profile_main'>
-                    <div></div>
-                    <div>
-                        <div className="about_user">
-                            <p>ddd</p>
-                        </div>
+                    <div className="topics">ddd</div>
+                    <div className="about_user">
+                        <Card className="bio">
+                            <Card.Header className='fs-5'>About {user.first_name} {user.last_name}</Card.Header>
+                            <Card.Body>{user.bio?.length > 0 ? user.bio : `No bio yet...` }</Card.Body>
+                        </Card>
+                        <Card className='favorite_games'>
+                            <Card.Header className='fs-5'>Favorite games</Card.Header>
+                            <Card.Body>
+                            {user.favorite_games?.length > 0 ? user.favorite_games?.map(game => (
+                                <p className='fs-10 mb-1'><Link to={`/game/${game._id}`} >{game.title}</Link></p>
+                                ))
+                                :
+                                <p>No favorite games yet...</p>
+                            }
+                            </Card.Body>
+                        </Card>
                     </div>
                 </div>
             </>
