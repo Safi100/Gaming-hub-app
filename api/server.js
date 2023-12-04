@@ -47,14 +47,15 @@ app.use(cors({
 }));
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(cookieParser());
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // Routes
 const AuthRoute = require('./routes/auth.route');
 const ConversationRoute = require('./routes/conversation.route');
 const UserRoute = require('./routes/user.route');
 const GameRoute = require('./routes/game.route');
+const GiveAwayRoute = require('./routes/giveAway.route');
 
 const { authMiddleware } = require('./middleware');
 
@@ -62,10 +63,12 @@ app.use('/api/auth/', AuthRoute)
 app.use('/api/conversation/', authMiddleware, ConversationRoute) // protected route
 app.use('/api/user/', UserRoute)
 app.use('/api/game/', GameRoute)
+app.use('/api/giveaway/', GiveAwayRoute)
 
 // General search
 const User = require('./models/user.model');
 const Game = require('./models/game.model');
+
 app.post('/api/search', async (req, res, next) => {
   try{
     let data = []
@@ -91,7 +94,7 @@ app.post('/api/search', async (req, res, next) => {
       data.push({
         title: users[i].first_name + " " + users[i].last_name,
         _id: users[i]._id,
-        avatar: users[i].avatar,
+        avatar: users[i].avatar || null,
         isAdmin: users[i].isAdmin,
         email: users[i].email,
         isUser: true,
