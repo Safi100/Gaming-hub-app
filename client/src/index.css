@@ -40,6 +40,12 @@ a{
 li{
   list-style: none;
 }
+.cursor-pointer{
+  cursor: pointer;
+}
+button{
+  font-size: 13.33px !important;
+}
 /* pagination */
 .whiteTextPagination .MuiPaginationItem-page {
   color: #fff; /* Change the text color to white */
