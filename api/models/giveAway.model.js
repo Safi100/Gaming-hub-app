@@ -8,12 +8,11 @@ const giveAwaySchema = new Schema({
     },
     body: {
         type: String,
-        required: [true, 'body is required']
+        default: null
     },
     game: {
         type: Schema.Types.ObjectId,
         ref: 'Game',
-        required: [true, 'game is required']
     },
     participants: [{
         type: Schema.Types.ObjectId,
@@ -21,7 +20,8 @@ const giveAwaySchema = new Schema({
     }],
     max_participants: {
         type: Number,
-        required: [true, 'max_participants is required']
+        required: [true, 'max_participants is required'],
+        min: 1
     },
     winner: {
         type: Schema.Types.ObjectId,
