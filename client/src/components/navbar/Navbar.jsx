@@ -142,6 +142,11 @@ function Navbar() {
                   <Link to={'/admin/games-control'}>Games Control</Link>
                 </MenuItem>
                 }
+                { currentUser?.isAdmin &&
+                  <MenuItem onClick={handleCloseNavMenu}>
+                  <Link to={'/admin/add-new-giveaway'}>Add New Giveaway</Link>
+                </MenuItem>
+                }
               </Menu>
               </span>
             </div>
