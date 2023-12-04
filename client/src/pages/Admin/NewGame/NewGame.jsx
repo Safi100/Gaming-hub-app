@@ -194,13 +194,13 @@ const NewGame = () => {
                 </Form.Group>
                 <Form.Group as={Col} md="12" className='mb-3' controlId="validationCustom12">
                     <Form.Label>MEMORY</Form.Label>
-                    <Form.Control name="max_memory" value={formData.max_memory} onChange={handleInputChange} required type="text" placeholder='Example: 8 GB RAM' />
+                    <Form.Control name="min_memory" value={formData.min_memory} onChange={handleInputChange} required type="text" placeholder='Example: 8 GB RAM' />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type="invalid">Please provide a memory size.</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group as={Col} md="12" className='mb-3' controlId="validationCustom14">
                     <Form.Label>GRAPHICS CARD</Form.Label>
-                    <Form.Control name="max_graphics_card" value={formData.max_graphics_card} onChange={handleInputChange} required type="text" placeholder='Example: NVIDIA® GeForce™ GTX 670 or NVIDIA® GeForce™ GTX 1050 / AMD® Radeon™ HD 7950 or AMD® Radeon™ R9 270' />
+                    <Form.Control name="min_graphics_card" value={formData.min_graphics_card} onChange={handleInputChange} required type="text" placeholder='Example: NVIDIA® GeForce™ GTX 670 or NVIDIA® GeForce™ GTX 1050 / AMD® Radeon™ HD 7950 or AMD® Radeon™ R9 270' />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type="invalid">Please provide a graphic card.</Form.Control.Feedback>
                 </Form.Group>
