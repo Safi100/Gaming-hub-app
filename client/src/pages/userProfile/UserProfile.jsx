@@ -6,6 +6,7 @@ import Avatar from '@mui/material/Avatar';
 import MessageIcon from '@mui/icons-material/Message';
 import { stringAvatar } from '../../components/avatar';
 import { AuthContext } from '../../context/AuthContext'; 
+import {Card} from 'react-bootstrap';
 import './userProfile.css'
 import EditProfile from './EditProfile';
 
