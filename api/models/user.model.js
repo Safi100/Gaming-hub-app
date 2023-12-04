@@ -57,18 +57,22 @@ const userSchema = new Schema({
     ],
     notifications: [
         {
-            from: {
-                type: Schema.Types.ObjectId,
-                ref: 'User'
+            about: {
+                type: String,
+                enum: ['follow', 'post', 'comment', 'reply', 'giveaway']
             },
-            // about: {
-            //     type: String,
-            //     enum: ['follow', 'post', 'comment', 'reply']
-            // },
+            content_id: {
+                type: String,
+                // required: true
+            },
             body: {
                 type: String,
                 required: true
-            }
+            },
+            date: {
+                type: Date,
+                default: new Date()
+            },
         }
     ]
 }, {timestamps: true})
