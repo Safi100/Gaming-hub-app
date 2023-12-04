@@ -9,16 +9,13 @@ import chatImage from '../../assets/chat_icon.png';
 import './chat.css';
 import CreateGroup from '../../components/chat/CreateGroup';
 import { AuthContext } from '../../context/AuthContext';
+import LoginFirst from '../../components/redirecting/LoginFirst';
 
 const Chat = () => {
   const navigate = useNavigate();
-    // get current user
-    const [currentUser, setCurrentUser] = useState(null);
-    const authContext = useContext(AuthContext);
-    useEffect(() => {
-      setCurrentUser(authContext.currentUser);
-      if(!authContext.currentUser) navigate('/')
-    }, [authContext]);
+  // get current user
+  const [currentUser, setCurrentUser] = useState(null);
+  const authContext = useContext(AuthContext);
 
   const chatContext = useContext(ChatContext)
   const { id } = useParams(); // conversation id
@@ -42,6 +39,7 @@ const Chat = () => {
   }, [id, chatContext]);
 
   return (
+    (!authContext.currentUser) ? <LoginFirst /> :
     <div className='chat_bg'>
       <div className='chat_container'>
         <div className='side_list'>
