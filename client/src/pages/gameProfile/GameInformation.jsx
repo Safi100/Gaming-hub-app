@@ -16,8 +16,8 @@ const GameInformation = ({game, setOpenGameInfo}) => {
                     <div className='requirements_row'>
                         {game.systemRequirements.map((req => 
                             <div key={req.type}>
-                                <h3>{req.type}</h3>
-                                <ul>
+                                <h3 className='mb-3'>{req.type}</h3>
+                                <ul className='p-0'>
                                     <li><span>OS:</span> {req.os}</li>
                                     <li><span>Processor:</span> {req.processor}</li>
                                     <li><span>Memory:</span> {req.memory}</li>
