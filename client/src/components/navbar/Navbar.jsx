@@ -147,6 +147,9 @@ function Navbar() {
                   <Link to={'/admin/add-new-giveaway'}>Add New Giveaway</Link>
                 </MenuItem>
                 }
+                  <MenuItem onClick={handleCloseNavMenu}>
+                  <Link to={`/giveaway?page=${1}&gameCategory=`}>Giveaways</Link>
+                </MenuItem>
               </Menu>
               </span>
             </div>
