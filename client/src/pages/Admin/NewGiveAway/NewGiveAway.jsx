@@ -119,7 +119,7 @@ const NewGiveAway = () => {
                     <Form.Select onChange={handleInputChange} name='game' required>
                         <option value="">Choose a game category</option>
                         {games.map(game => (
-                            <option value={game._id} >{game.title}</option>
+                            <option value={game._id} key={game._id}>{game.title}</option>
                         ))}
                     </Form.Select>
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
