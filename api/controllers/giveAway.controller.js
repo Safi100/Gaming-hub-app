@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Giveaway = require('../models/giveAway.model');
 const User = require('../models/user.model');
 const Games = require('../models/game.model');
@@ -82,6 +83,23 @@ module.exports.gamesHaveAvailabeGiveaway = async (req, res, next) => {
         const available_giveaways_games = await Games.find({_id: games}).select(['title'])
         // get games that have availabe giveaway
         res.status(200).send(available_giveaways_games)
+    }catch(e){
+        next(e);
+    }
+}
+module.exports.joinGiveaway = async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Giveaway not found`, 404);
+        const giveaway = await Giveaway.findById(id);
+        if(!giveaway) throw new HandleError(`Giveaway not found`, 404);
+
+        // Check if current user has already joined the giveaway
+        if (giveaway.participants.includes(req.user.id)) throw new HandleError(`You are already joined this giveaway`, 400);
+        giveaway.participants.push(req.user.id);
+        await giveaway.save();
+        await giveaway.populate("participants");
+        res.status(200).send(giveaway.participants);
     }catch(e){
         next(e);
     }
