@@ -46,6 +46,10 @@ li{
 button{
   font-size: 13.33px !important;
 }
+.pagination{
+  display: flex;
+  justify-content: center;
+}
 /* pagination */
 .whiteTextPagination .MuiPaginationItem-page {
   color: #fff; /* Change the text color to white */
