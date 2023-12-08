@@ -1,0 +1,26 @@
+.giveaway_row{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+@media (max-width: 1024px) {
+    .giveaway_row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+    .giveaway_row { grid-template-columns: repeat(1, 1fr); }
+}
+  
+.giveaway_card{
+    display: flex;
+    flex-direction: column;
+    background: #242526;
+    color: #fff;
+    overflow: hidden;
+    width: 100%;
+}
+.giveaway_card .giveaway_buttons {
+    max-width: max-content;
+    margin-top: auto;
+    display: flex;
+    gap: 10px;
+}
