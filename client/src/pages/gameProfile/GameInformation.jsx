@@ -9,7 +9,7 @@ const GameInformation = ({game, setOpenGameInfo}) => {
                     <span className='header_title'>{game.title}</span>
                     <span className='close' onClick={()=> setOpenGameInfo(false)}><CloseIcon /></span>
                 </div>
-                <p>{game.description}</p>
+                <p dangerouslySetInnerHTML={{ __html: game.description.replace(/\n/g, '<br>')}} />
                 <div className='requirements'>
                     <h2>SYSTEM REQUIREMENTS</h2>
                     <div className="line" />
