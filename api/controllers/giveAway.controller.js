@@ -58,7 +58,8 @@ module.exports.fetchGiveAways = async (req, res, next) => {
         if (gameCategory) query.game = gameCategory; // filter giveaways using game category
         query.winner = null // fetch giveaways that don't have a winner yet.
         const GiveawaysCount = await Giveaway.countDocuments(query) // number of all giveaway that fetched
-        const giveaways = await Giveaway.find(query).limit(giveaway_per_page).skip(skip).populate('game');
+        const giveaways = await Giveaway.find(query).limit(giveaway_per_page).skip(skip).populate('game')
+        .populate({path: 'participants', select:['first_name', 'last_name', 'email', 'avatar']});
         const Counts_of_Pages = Math.ceil(GiveawaysCount / giveaway_per_page) // Round up to nearest integer
         res.status(200).json({giveaways, Counts_of_Pages});
     }catch(e){
@@ -89,6 +90,7 @@ module.exports.gamesHaveAvailabeGiveaway = async (req, res, next) => {
 }
 module.exports.joinGiveaway = async (req, res, next) => {
     try {
+        const io = req.app.get('socketio');
         const {id} = req.params;
         if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Giveaway not found`, 404);
         const giveaway = await Giveaway.findById(id);
@@ -98,7 +100,9 @@ module.exports.joinGiveaway = async (req, res, next) => {
         if (giveaway.participants.includes(req.user.id)) throw new HandleError(`You are already joined this giveaway`, 400);
         giveaway.participants.push(req.user.id);
         await giveaway.save();
-        await giveaway.populate("participants");
+        await giveaway.populate({path: 'participants', select:['first_name', 'last_name', 'email', 'avatar']});;
+        // Emit an event to notify connected clients about the updated giveaway data
+        io.emit('joinGiveaway', { giveawayID: giveaway._id, Participants: giveaway.participants });
         res.status(200).send(giveaway.participants);
     }catch(e){
         next(e);
