@@ -64,3 +64,8 @@ button{
 .whiteTextPagination .MuiPaginationItem-text{
   color: #fff;
 }
+
+/* Target the disabled button element */
+button:disabled {
+  opacity: 0.4 !important;
+}
