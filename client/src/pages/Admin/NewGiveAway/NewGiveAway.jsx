@@ -45,7 +45,7 @@ const NewGiveAway = () => {
         max_participants: '',
         winner_announcement_date: '',
     })
-    const [prizeImage, setPrizeImage] = useState('');
+
    // input change event
    const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -54,10 +54,7 @@ const NewGiveAway = () => {
             [name]: value.trimStart()
         });
     };
-    // images change event
-    const handlePrizeImageChange = (e) => {
-        setPrizeImage(e.target.files[0])
-    };
+
     const handleSubmit = (e) => {
         const form = e.currentTarget;
         e.preventDefault();
