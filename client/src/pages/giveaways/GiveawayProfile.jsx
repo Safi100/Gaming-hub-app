@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import {useParams} from 'react-router-dom'
+import {useParams, useNavigate} from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext';
 import { ToastContainer, toast } from 'react-toastify'
 import Axios from 'axios'
@@ -9,6 +9,7 @@ import './giveaway.css'
 
 const GiveawayProfile = () => {
     const {id} = useParams()
+    const navigate = useNavigate()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     const [giveaway, setGiveaway] = useState({})
@@ -73,12 +74,21 @@ const GiveawayProfile = () => {
                 }));
             }
         });
-
         // Clean up the socket event listener when the component unmounts
         return () => {
             io.off('joinGiveaway');
         };
     }, [giveaway._id, io]);
+
+    const deleteGiveaway = (e) => {
+        e.preventDefault();
+        Axios.delete(`http://localhost:8000/api/giveaway/${id}`)
+        .then(() => {
+            io.emit('deleteGiveaway', {giveawayID: giveaway._id});
+            navigate('/giveaway?page=1&gameCategory=')
+        })
+        .catch(err => console.log(err))
+    }
 
     return (
         loading ? <PageLoading /> :
@@ -110,17 +120,28 @@ const GiveawayProfile = () => {
                     </button> 
                     }
                     { authContext.currentUser.isAdmin &&
-                        <div className='mt-4 d-flex gap-3'>
-                            <a className='btn btn-outline-primary' href={`/admin/edit-giveaway/${giveaway._id}`}>Edit giveaway</a>
-                            <button className='btn btn-outline-danger'>Delete giveaway</button>
+                        <div className='mt-4 d-flex flex-column gap-3'>
+                            <div><a className='btn btn-outline-primary' href={`/admin/edit-giveaway/${giveaway._id}`}>Edit giveaway</a></div>
+                            <div className="card delete_card">
+                                {/* Delete giveaway form */}
+                                <form className="card-body" onSubmit={deleteGiveaway}>
+                                    <h5 className="card-title mb-2">Delete giveaway</h5>
+                                    <div className='d-flex gap-2 mb-2'>
+                                        <input type="checkbox" id='delete' required/>
+                                        <label htmlFor="delete">Check this before delete</label>
+                                    </div>
+                                    <div><button href="#" className="btn btn-danger">Delete</button></div>
+                                </form>
+                            </div>
                         </div>
                     }
                 </div>
                 <div className="participants">
+                    {giveaway.participants?.length > 0 && <>
                     <h3 className='mb-3'>Participants: </h3>
                     <div className='par_row'>
                         {giveaway.participants?.map(participant => (
-                            <a href={`/profile/${participant._id}`} className='participant'>
+                            <a href={`/profile/${participant._id}`} className='participant' key={participant._id}>
                                 <div><img src={participant.avatar.url} alt="avatar url" /></div>
                                 <div>
                                     <p>{participant.first_name} {participant.last_name} {authContext.currentUser?._id === participant._id && <span className='me bg-primary'>me</span>}</p>
@@ -129,6 +150,7 @@ const GiveawayProfile = () => {
                             </a>
                         ))}
                     </div>
+                    </>}
                 </div>
             </div>
             </div>

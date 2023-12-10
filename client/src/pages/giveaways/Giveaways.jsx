@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import io from '../../components/socket';
 import PageLoading from '../../components/loading/PageLoading';
 import Pagination from '@mui/material/Pagination';
 import Giveaway_Card from './GiveawayCard';
@@ -22,6 +23,24 @@ const Giveaways = () => {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(true)
 
+    useEffect(() => {
+        // Listen for the "deleteGiveaway" event from the server
+        io.on('deleteGiveaway', ({ giveawayID }) => {
+            // Update the state using a functional update to ensure you have the latest state
+            setGiveaways(prevGiveaways => {
+                // Create a copy of the existing giveaways array without the deleted giveaway
+                const updatedGiveaways = prevGiveaways.filter(giveaway => giveaway._id !== giveawayID);
+                return updatedGiveaways;
+            });
+        });
+    
+        // Clean up the socket event listener when the component unmounts
+        return () => {
+            io.off('deleteGiveaway');
+        };
+    }, [io]);
+    
+    
     // toast
     const notify = () => {
         toast("Joined giveaway successfully!", {
