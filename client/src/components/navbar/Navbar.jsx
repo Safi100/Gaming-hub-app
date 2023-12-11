@@ -150,6 +150,11 @@ function Navbar() {
                   <MenuItem onClick={handleCloseNavMenu}>
                   <Link to={`/giveaway?page=${1}&gameCategory=`}>Giveaways</Link>
                 </MenuItem>
+                { currentUser &&
+                  <MenuItem onClick={handleCloseNavMenu}>
+                  <Link to={'/giveaway/my-giveaway'}>My giveaways</Link>
+                </MenuItem>
+                }
               </Menu>
               </span>
             </div>
