@@ -109,17 +109,18 @@ const GiveawayProfile = () => {
                     <p className='mt-2'>Participants: {giveaway.participants.length}/{giveaway.max_participants}</p>
                     {
                     isGiveawayEnded ? 
-                    <p className='my-2 text-danger'>Giveaway has been ended</p>
+                    <p className='my-2 text-danger'>The giveaway ended on {new Date(giveaway.winner_announcement_date).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric'})}</p>
                     : 
                     <p className='my-2'>Winner announcement at <span className='text-primary'>{new Date(giveaway.winner_announcement_date).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric'})}</span></p>
                     }
+                    {giveaway.winner && <p className='mb-4'>Winner: <a className='text-warning' href={`/profile/${giveaway.winner?._id}`}>{giveaway.winner?.first_name} {giveaway.winner?.last_name}</a></p>}
                     { authContext.currentUser &&
                     <button onClick={joinGiveaway} 
                     disabled={giveaway.max_participants === giveaway.participants.length || isCurrentUserParticipant} 
                     className='btn btn-success mt-2'>Join Giveaway
                     </button> 
                     }
-                    { authContext.currentUser.isAdmin &&
+                    { authContext.currentUser?.isAdmin &&
                         <div className='mt-4 d-flex flex-column gap-3'>
                             <div><a className='btn btn-outline-primary' href={`/admin/edit-giveaway/${giveaway._id}`}>Edit giveaway</a></div>
                             <div className="card delete_card">
