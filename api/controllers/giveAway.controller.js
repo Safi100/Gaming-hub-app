@@ -168,3 +168,14 @@ module.exports.deleteGiveaway = async (req, res, next) => {
         next(e);
     }
 }
+
+module.exports.myGiveaways = async (req, res, next) => {
+    try {
+        const giveaways = await Giveaway.find({"participants": { $in: [req.user.id] }}).populate('game')
+        .populate('participants', 'first_name last_name email avatar')
+        .populate('winner', 'first_name last_name email avatar');
+        res.status(200).send(giveaways)
+    }catch(e){
+        next(e);
+    }
+}
