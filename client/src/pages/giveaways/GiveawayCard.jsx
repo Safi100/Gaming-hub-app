@@ -1,6 +1,5 @@
 import {useState, useEffect, useContext} from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { ToastContainer, toast } from 'react-toastify';
 import Axios from 'axios'
 import io from '../../components/socket';
 
@@ -67,7 +66,7 @@ const GiveawayCard = ({ giveaway, notify }) => {
         <div className='giveaway_card p-3'>
             <h2 className='fs-5'>{currentGiveaway.heading}</h2>
             <p className='mb-2'>Participants: {currentGiveaway.participants.length}/{currentGiveaway.max_participants}</p>
-            <p className='mb-2'>Closed on: {new Date(currentGiveaway.winner_announcement_date).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric'})}</p>
+            <p className='mb-2'>Close on: {new Date(currentGiveaway.winner_announcement_date).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric'})}</p>
             <div className='giveaway_buttons mt-4 mb-4'>
                 {authContext.currentUser &&
                 <button onClick={joinGiveaway} 
@@ -77,7 +76,7 @@ const GiveawayCard = ({ giveaway, notify }) => {
                 }
                 <a className='btn btn-secondary' href={`/giveaway/${currentGiveaway._id}`}>See more</a>
             </div>
-            {authContext.currentUser.isAdmin &&
+            {authContext.currentUser?.isAdmin &&
             <div className='d-flex gap-2'>
                 <a className='btn btn-outline-primary' href={`/admin/edit-giveaway/${giveaway._id}`}>Edit giveaway</a>
                 <button className='btn btn-outline-danger' onClick={()=> setConfirmDelete(true)}>Delete giveaway</button>
