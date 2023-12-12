@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
-const Giveaway = require('../models/giveAway.model');
+const Giveaway = require('../models/giveaway.model');
 const User = require('../models/user.model');
 const Games = require('../models/game.model');
 const HandleError = require('../utils/HandleError');
+const cron = require('node-cron');
 
 module.exports.NewGiveAway = async (req, res, next) => {
     try{
@@ -179,3 +180,43 @@ module.exports.myGiveaways = async (req, res, next) => {
         next(e);
     }
 }
+
+// Schedule a job to run every hour (at the beginning of each hour)
+cron.schedule('0 * * * *', async (req, res, next) => {
+    const io = req.app.get('socketio');
+    const todayDate = new Date();
+    try {
+        // Find giveaways where the winner announcement date has passed and no winner is selected
+        const giveaways = await Giveaway.find({
+            winner_announcement_date: { $lte: todayDate },
+            $or: [{ winner: { $exists: false } }, { winner: null }]
+        });
+
+        giveaways.forEach(async (giveaway) => {
+            if (giveaway.participants && giveaway.participants.length > 0) {
+                // Randomly select a winner
+                const randomIndex = Math.floor(Math.random() * giveaway.participants.length);
+                const selectedWinner = giveaway.participants[randomIndex];
+                // Update the giveaway with the selected winner
+                giveaway.winner = selectedWinner;
+                console.log(selectedWinner);
+                const user = await User.findById(selectedWinner)
+                // send a notification to the user
+                const notification = {
+                    about: "giveaway",
+                    content_id: giveaway._id,
+                    body: "Congratulations, you won a giveaway!",
+                    date: new Date()
+                }
+                user.notifications.push({
+                    notification
+                })
+                io.emit('sendNotification', {userID: user._id, noitification: notification});
+                await user.save();
+                await giveaway.save();
+            }
+        });
+    } catch (e) {
+        next(e);
+    }
+});
