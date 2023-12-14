@@ -58,7 +58,7 @@ const userSchema = new Schema({
     topics: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'Topic'
         }
     ],
     notifications: [

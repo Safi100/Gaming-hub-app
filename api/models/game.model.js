@@ -70,7 +70,7 @@ const gameSchema = new Schema({
     topics: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'Topic'
         }
     ]
 }, {timestamps: true})
