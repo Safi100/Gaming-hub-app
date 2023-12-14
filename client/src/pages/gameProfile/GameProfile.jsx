@@ -84,7 +84,7 @@ const GameProfile = () => {
             }
             { openGameInfo && <GameInformation game={game} setOpenGameInfo={setOpenGameInfo} /> }
             {game.topics?.length === 0 ? <h2 className='text-danger mb-5'>No topics yet...</h2> :            
-               <table className='topic_table mb-5'>
+               <table className='topic_table mb-5 w-100'>
                     <thead>
                         <tr>
                             <th scope="col">Topic</th>
@@ -96,7 +96,7 @@ const GameProfile = () => {
                     <tbody>
                         { game.topics?.map(topic => (
                            <tr>
-                                <td className='w-100 link'><a className='w-100 d-block' href={`/topic/${topic._id}`}>{topic.subject}</a></td>
+                                <td className='link'><a className='w-100 topic_subject' href={`/topic/${topic._id}`}>{topic.subject}</a></td>
                                 <td className='link'>
                                     <a href={`/profile/${topic.author._id}`}>
                                         {topic.author.first_name} {topic.author.last_name}
