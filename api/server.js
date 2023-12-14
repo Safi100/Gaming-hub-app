@@ -55,7 +55,8 @@ const AuthRoute = require('./routes/auth.route');
 const ConversationRoute = require('./routes/conversation.route');
 const UserRoute = require('./routes/user.route');
 const GameRoute = require('./routes/game.route');
-const GiveAwayRoute = require('./routes/giveAway.route');
+const GiveAwayRoute = require('./routes/giveaway.route');
+const TopicRoute = require('./routes/topic.route');
 
 const { authMiddleware } = require('./middleware');
 
@@ -64,10 +65,16 @@ app.use('/api/conversation/', authMiddleware, ConversationRoute) // protected ro
 app.use('/api/user/', UserRoute)
 app.use('/api/game/', GameRoute)
 app.use('/api/giveaway/', GiveAwayRoute)
+app.use('/api/topic/', TopicRoute)
 
 // General search
 const User = require('./models/user.model');
 const Game = require('./models/game.model');
+const giveAwayModel = require('./models/giveaway.model');
+
+app.get('/test', async (req, res) => {
+  await giveAwayModel.deleteMany();
+})
 
 app.post('/api/search', async (req, res, next) => {
   try{
