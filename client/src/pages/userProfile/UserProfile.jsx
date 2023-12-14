@@ -85,7 +85,7 @@ const UserProfile = () => {
                         <h2 className='user_full_name'>{user.first_name} {user.last_name} {user.isAdmin && <span className='admin'>Admin</span>}</h2>
                         <div className='follow_div'>
                             <p>Followers: {user.followers?.length}</p>
-                            { (currentUser && currentUser._id !== user._id) && (
+                            { (currentUser && currentUser?._id !== user._id) && (
                                 isFollower ?
                                 <button onClick={following_toggle} className=' follow_status_btn unfollow'>unfollow</button>
                                 :
@@ -107,30 +107,51 @@ const UserProfile = () => {
                     </div>
                 </div>
                 <div className='profile_main'>
-                    <div className="topics">ddd</div>
-                    <div className="about_user">
-                        <Card className="bio">
-                            <Card.Header className='fs-5'>About {user.first_name} {user.last_name}</Card.Header>
-                            <Card.Body>{user.bio?.length > 0 ? user.bio : `No bio yet...` }</Card.Body>
-                        </Card>
-                        <Card className='favorite_games'>
-                            <Card.Header className='fs-5'>Favorite games</Card.Header>
-                            <Card.Body>
-                            {user.favorite_games?.length > 0 ? user.favorite_games?.map(game => (
-                                <p className='fs-10 mb-1'><Link to={`/game/${game._id}`} >{game.title}</Link></p>
-                                ))
-                                :
-                                <p>No favorite games yet...</p>
-                            }
-                            </Card.Body>
-                        </Card>
-                    </div>
+                <div className='w-100'>
+                    {user.topics?.length === 0 ? <h2 className="text-danger">No topics yet...</h2> :            
+                    <table className='topic_table w-100 mb-5'>
+                        <thead>
+                            <tr>
+                                <th scope="col">Topic</th>
+                                <th scope="col">Comments</th>
+                                <th scope="col">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { user.topics?.map(topic => (
+                            <tr>
+                                <td className='w-100 link'><a className='w-100 d-block' href={`/topic/${topic._id}`}>{topic.subject}</a></td>
+                                <td>{topic.comments.length}</td>
+                                <td>{new Date(topic.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: '2-digit', hour: 'numeric', minute: 'numeric'})}</td>
+                            </tr>
+                            ))}   
+                        </tbody>
+                    </table>
+                    }
+                </div>
+                <div className="about_user">
+                    <Card className="bio">
+                        <Card.Header className='fs-5'>About {user.first_name} {user.last_name}</Card.Header>
+                        <Card.Body>{user.bio?.length > 0 ? user.bio : `No bio yet...` }</Card.Body>
+                    </Card>
+                    <Card className='favorite_games'>
+                        <Card.Header className='fs-5'>Favorite games</Card.Header>
+                        <Card.Body>
+                        {user.favorite_games?.length > 0 ? user.favorite_games?.map(game => (
+                            <p className='fs-10 mb-1'><Link to={`/game/${game._id}`} >{game.title}</Link></p>
+                            ))
+                            :
+                            <p>No favorite games yet...</p>
+                        }
+                        </Card.Body>
+                    </Card>
+                </div>
                 </div>
             </>
             }
             </div>
             }
-            {currentUser && currentUser._id === user._id && 
+            {currentUser && currentUser?._id === user._id && 
             (openEdit && <EditProfile  user={user} setUser={setUser} setOpenEdit={setOpenEdit} />) }
         </div>
     );
