@@ -6,6 +6,8 @@ import Axios from 'axios'
 import io from '../../components/socket'
 import PageLoading from '../../components/loading/PageLoading'
 import './giveaway.css'
+import { stringAvatar } from '../../components/avatar';
+import Avatar from '@mui/material/Avatar';
 
 const GiveawayProfile = () => {
     const {id} = useParams()
@@ -143,7 +145,9 @@ const GiveawayProfile = () => {
                     <div className='par_row'>
                         {giveaway.participants?.map(participant => (
                             <a href={`/profile/${participant._id}`} className='participant' key={participant._id}>
-                                <div><img src={participant.avatar.url} alt="avatar url" /></div>
+                                <div>{participant.avatar ? <img src={participant.avatar.url} alt="avatar url" /> : 
+                                <Avatar {...stringAvatar(`${participant.first_name} ${participant.last_name}`)} />                                    
+                                }</div>
                                 <div>
                                     <p>{participant.first_name} {participant.last_name} {authContext.currentUser?._id === participant._id && <span className='me bg-primary'>me</span>}</p>
                                     <p>{participant.email}</p>
