@@ -1,8 +1,6 @@
 import {useState} from 'react';
 import { Row, Col, Card, Form, Button, Spinner } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-toastify/dist/ReactToastify.css';
 import { stringAvatar } from '../../components/avatar';
 import Avatar from '@mui/material/Avatar';
 import Axios from 'axios'
