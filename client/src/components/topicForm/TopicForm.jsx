@@ -47,7 +47,7 @@ const TopicForm = () => {
     return (
         <Form className='newTopic_form my-5 p-3' noValidate validated={validated} onSubmit={handleSubmit} >
             <h2 className='mb-3 fs-5'>Share Your Gaming Experiences and Insights</h2>
-            <Form.Group as={Col} className='mb-3' md="12" controlId="validationCustom02">
+            <Form.Group as={Col} className='mb-3' md="12" controlId="validationCustom01">
                 <Form.Label>Subject</Form.Label>
                 <Form.Control name="subject" value={formData.subject} onChange={handleInputChange} required type="text" placeholder='Type a subject for your new topic...' />
                 <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
