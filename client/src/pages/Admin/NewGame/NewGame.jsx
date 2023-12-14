@@ -1,16 +1,15 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { AuthContext } from '../../../context/AuthContext';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-toastify/dist/ReactToastify.css';
 import Spinner from 'react-bootstrap/Spinner';
 import './newGame.css'
 import Axios from 'axios'
 import NotAuthorize from '../../../components/redirecting/NotAuthorize';
+
 const NewGame = () => {
   const authContext = useContext(AuthContext);
 
