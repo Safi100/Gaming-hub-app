@@ -66,6 +66,12 @@ const gameSchema = new Schema({
                 required: [true, 'Graphics information is required']
             }
         }
+    ],
+    topics: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        }
     ]
 }, {timestamps: true})
 

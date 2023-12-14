@@ -55,11 +55,17 @@ const userSchema = new Schema({
             ref: 'Game'  
         }
     ],
+    topics: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ],
     notifications: [
         {
             about: {
                 type: String,
-                enum: ['follow', 'post', 'comment', 'reply', 'giveaway']
+                enum: ['follow', 'topic', 'comment', 'reply', 'giveaway']
             },
             content_id: {
                 type: String,
