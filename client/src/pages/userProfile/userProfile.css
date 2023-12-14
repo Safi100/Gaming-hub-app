@@ -97,8 +97,6 @@
     width: 100%;
 }
 .profile_main .about_user{
-    position: sticky;
-    top: 0;
     min-width: 350px;
     display: flex;
     flex-direction: column;
@@ -199,16 +197,21 @@
     box-shadow: 0 1px 1px 0 rgba(0,0,0,.5);
     background-color: #242526;
     border-collapse: collapse;
-    padding: 20px;
 }
 .topic_table th, .topic_table td{
     padding: 8px;
 }
-.topic_table td{
-    white-space: nowrap;
-}
 .topic_table tbody tr:hover {
     background: #3a3b3c;
+}
+.topic_table .topic_subject{
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical;
+    max-width: 500px;
 }
 tbody tr{
     border-top: 1px solid #555555;
