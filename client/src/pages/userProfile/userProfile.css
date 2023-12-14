@@ -14,7 +14,7 @@
 }
 .profile_header .avatar{
     width: 200px;
-    /* height: 200px; */
+    max-height: 220px;
     min-width: 100px;
 }
 .profile_header .avatar > *{
@@ -93,7 +93,6 @@
     padding: 30px 0;
 }
 .profile_main .topics{
-    background: red;
     min-width: 480px;
     width: 100%;
 }
@@ -177,23 +176,6 @@
     background-color: rgba(33, 40, 50, 0.03);
     border-bottom: 1px solid rgba(33, 40, 50, 0.125);
 }
-.form-control, .dataTable-input {
-    display: block;
-    width: 100%;
-    padding: 0.875rem 1.125rem;
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1;
-    color: #69707a;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #c5ccd6;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    border-radius: 0.35rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
 .edit_profile .gender_input .gender_dev{
     display: flex;
     gap: 20px;
@@ -211,4 +193,26 @@
 }
 .edit_profile .gender_input span{
     color: #000;
+}
+/* topics */
+.topic_table{
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.5);
+    background-color: #242526;
+    border-collapse: collapse;
+    padding: 20px;
+}
+.topic_table th, .topic_table td{
+    padding: 8px;
+}
+.topic_table td{
+    white-space: nowrap;
+}
+.topic_table tbody tr:hover {
+    background: #3a3b3c;
+}
+tbody tr{
+    border-top: 1px solid #555555;
+}
+tbody .link {
+    cursor: pointer;
 }
