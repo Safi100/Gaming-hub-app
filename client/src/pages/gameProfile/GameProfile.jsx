@@ -83,6 +83,28 @@ const GameProfile = () => {
             </>
             }
             { openGameInfo && <GameInformation game={game} setOpenGameInfo={setOpenGameInfo} /> }
+            {game.topics?.length === 0 ? <h2>No topics yet...</h2> :            
+               <table className='topic_table mb-5'>
+                    <thead>
+                        <tr>
+                            <th scope="col">Topic</th>
+                            <th scope="col">Author</th>
+                            <th scope="col">Comments</th>
+                            <th scope="col">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        { game.topics?.map(topic => (
+                           <tr>
+                                <td className='w-100 link'><a className='w-100 d-block' href={`/topic/${topic._id}`}>{topic.subject}</a></td>
+                                <td className='link'><a href={`/profile/${topic.author._id}`}>{topic.author.first_name} {topic.author.last_name}</a></td>
+                                <td clas>{topic.comments.length}</td>
+                                <td>{new Date(topic.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: '2-digit', hour: 'numeric', minute: 'numeric'})}</td>
+                           </tr>
+                        ))}   
+                    </tbody>
+                </table>
+            }
         </div>
     );
 }
