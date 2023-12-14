@@ -1,0 +1,6 @@
+.newTopic_form{
+    background-color: #242526;
+}
+.newTopic_form .textarea{
+    resize: none;
+}

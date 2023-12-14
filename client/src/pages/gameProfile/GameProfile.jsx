@@ -5,6 +5,7 @@ import { AuthContext } from '../../context/AuthContext';
 import PageLoading from '../../components/loading/PageLoading';
 import './gameProfile.css'
 import GameInformation from './GameInformation';
+import TopicForm from '../../components/topicForm/TopicForm';
 
 const GameProfile = () => {
     const {id} = useParams()
@@ -39,7 +40,6 @@ const GameProfile = () => {
     const toggle_favorite = () => {
         Axios.post(`http://localhost:8000/api/game/add-to-favorite/${id}`)
         .then(res => {
-            console.log(res.data);
             setCurrentUser((prevCurrentUser) => ({
                 ...prevCurrentUser,
                 favorite_games: res.data,
@@ -50,14 +50,13 @@ const GameProfile = () => {
     return (
         loading ? <PageLoading /> :
         <div className='wrapper'>
-            {console.log(currentUser)}
             {error ? <h2 className='text-danger my-5 fs-1'>{error}</h2> :
             <>
             <div className="gameProfile">
                 <div className="cover_photo" style={{backgroundImage: `linear-gradient(45deg, rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${game.cover_photo.url}')`}}></div>
                 <div className="game_info">
                     <div className='main_photo'>
-                        <img src={game.main_photo.url} alt={`${game.title} main photo`} />
+                        <img src={game.main_photo.url} alt={`${game.title}-main`} />
                     </div>
                     <div className='game'>
                         <div className='game_details'>
@@ -79,6 +78,7 @@ const GameProfile = () => {
                         </div>
                     </div>
                 </div>
+                {currentUser && < TopicForm /> }
             </div>
             </>
             }
