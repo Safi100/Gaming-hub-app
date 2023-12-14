@@ -73,6 +73,7 @@ module.exports.fetchUserDataProfile = async (req, res, next) => {
       const user = await User.findById(id).select(['-isVerified', '-password', '-updatedAt'])
       .populate({path: 'followers', select: ['first_name', 'last_name', 'avatar', 'email', 'isAdmin']})
       .populate({path: 'favorite_games', select: ['title', 'main_photo']})
+      .populate({path: 'topics', populate: {path: 'author', select: ['first_name', 'last_name', 'avatar', 'isAdmin', 'email']}});
       if(!user) throw new HandleError(`User not found`, 404)
       res.status(200).json(user);
   }catch(e){
@@ -86,6 +87,8 @@ module.exports.editUserDataProfile = async (req, res, next) => {
     let user = await User.findById(req.user.id).select(['-isVerified', '-password', '-updatedAt'])
     .populate({path: 'followers', select: ['first_name', 'last_name', 'avatar', 'email', 'isAdmin']})
     .populate({path: 'favorite_games', select: ['title', 'main_photo']})
+    .populate({path: 'topics', populate: {path: 'author', select: ['first_name', 'last_name', 'avatar', 'isAdmin', 'email']}});
+    
     const {first_name, last_name, gender, bio} = req.body
 
     // Update the user document

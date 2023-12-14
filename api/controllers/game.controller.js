@@ -149,7 +149,8 @@ module.exports.fetchGameProfile = async (req, res, next) => {
     try{
         const {id} = req.params
         if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Game not found`, 404);
-        const game = await Game.findById(id);
+        const game = await Game.findById(id).populate({path: 'topics', 
+        populate: {path: 'author', select: ['first_name', 'last_name', 'avatar', 'isAdmin', 'email']}});
         if(!game) throw new HandleError(`Game not found`, 404);
         res.status(200).json(game);
     }catch(e) {
