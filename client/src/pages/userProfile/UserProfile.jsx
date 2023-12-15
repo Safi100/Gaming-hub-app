@@ -4,6 +4,7 @@ import Axios from 'axios'
 import PageLoading from '../../components/loading/PageLoading';
 import Avatar from '@mui/material/Avatar';
 import MessageIcon from '@mui/icons-material/Message';
+import { ToastContainer, toast } from 'react-toastify';
 import { stringAvatar } from '../../components/avatar';
 import { AuthContext } from '../../context/AuthContext'; 
 import {Card} from 'react-bootstrap';
@@ -11,6 +12,18 @@ import './userProfile.css'
 import EditProfile from './EditProfile';
 
 const UserProfile = () => {
+    const notify = () => {
+        toast("Topic deleted successfully!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
+    }
     const navigate = useNavigate()
     // get current user
     const [currentUser, setCurrentUser] = useState(null);
@@ -24,6 +37,7 @@ const UserProfile = () => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [openEdit, setOpenEdit] = useState(false);
+    
     // fetch user profile data
     useEffect(() => {
         setOpenEdit(false)
@@ -42,6 +56,7 @@ const UserProfile = () => {
 
     // following status
     const isFollower = user.followers?.some(follower => follower._id === currentUser?._id)
+    
     // follow function
     const following_toggle = () => {
         Axios.post(`http://localhost:8000/api/user/toggle-following-user/${user._id}`)
@@ -65,10 +80,25 @@ const UserProfile = () => {
         })
         .catch((err) => console.log(err))
     }
+    // delete topic
+    const deleteTopic = (e, topicID) => {
+        e.preventDefault()
+        Axios.delete(`http://localhost:8000/api/topic/${topicID}`)
+        .then((res) => {
+            // Update the state to remove the deleted topic
+            setUser((prevUser) => ({
+                ...prevUser,
+                topics: prevUser.topics.filter((topic) => topic._id !== topicID),
+            }));
+            // Notify the user about the deletion
+            notify();
+        })
+        .catch(err => console.log(err))
+    }
 
     return (
         <div className='user_profile'>
-            {console.log(user)}
+            <ToastContainer/>
             {loading ? <PageLoading /> :
             <div className="wrapper">
             {error ? <h2 className='error'>{error}</h2> :
@@ -115,19 +145,28 @@ const UserProfile = () => {
                                 <th scope="col">Topic</th>
                                 <th scope="col">Comments</th>
                                 <th scope="col">Date</th>
+                                {currentUser?._id === user._id && <th scope="col">Control</th>}
                             </tr>
                         </thead>
                         <tbody>
                             { user.topics?.map(topic => (
-                            <tr>
-                                <td className='w-100 link'><a className='w-100 d-block' href={`/topic/${topic._id}`}>{topic.subject}</a></td>
+                            <tr key={topic._id}>
+                                <td className='link'><a className='w-100 topic_subject' href={`/topic/${topic._id}`}>{topic.subject}</a></td>
                                 <td>{topic.comments.length}</td>
                                 <td>{new Date(topic.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: '2-digit', hour: 'numeric', minute: 'numeric'})}</td>
+                                {currentUser._id === topic.author._id && 
+                                <td>
+                                    <form className='d-flex gap-2' onSubmit={(e) => deleteTopic(e, topic._id)}>
+                                        <button className='btn btn-sm btn-danger'>Delete topic</button>
+                                        <input name='TOPIC' type='checkbox' required />
+                                    </form>
+                                </td>
+                                }
                             </tr>
-                            ))}   
+                            ))}
                         </tbody>
                     </table>
-                    }
+                }
                 </div>
                 <div className="about_user">
                     <Card className="bio">
@@ -138,7 +177,7 @@ const UserProfile = () => {
                         <Card.Header className='fs-5'>Favorite games</Card.Header>
                         <Card.Body>
                         {user.favorite_games?.length > 0 ? user.favorite_games?.map(game => (
-                            <p className='fs-10 mb-1'><Link to={`/game/${game._id}`} >{game.title}</Link></p>
+                            <p className='fs-10 mb-1' key={game._id}><Link to={`/game/${game._id}`} >{game.title}</Link></p>
                             ))
                             :
                             <p>No favorite games yet...</p>
