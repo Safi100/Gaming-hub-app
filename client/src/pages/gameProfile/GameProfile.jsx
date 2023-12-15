@@ -24,7 +24,6 @@ const GameProfile = () => {
         Axios.get(`http://localhost:8000/api/game/${id}`)
         .then(res => {
             setGame(res.data)
-            console.log(res.data)
             setLoading(false)
         })
         .catch(err => {
@@ -95,7 +94,7 @@ const GameProfile = () => {
                     </thead>
                     <tbody>
                         { game.topics?.map(topic => (
-                           <tr>
+                           <tr key={topic._id}>
                                 <td className='link'><a className='w-100 topic_subject' href={`/topic/${topic._id}`}>{topic.subject}</a></td>
                                 <td className='link'>
                                     <a href={`/profile/${topic.author._id}`}>
