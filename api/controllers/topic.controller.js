@@ -3,13 +3,14 @@ const cron = require('node-cron');
 const Topic = require('../models/topic.model');
 const User = require('../models/user.model');
 const Game = require('../models/game.model');
+const HandleError = require('../utils/HandleError');
 
 module.exports.newTopic = async (req, res, next) => {
     try {
         const io = req.app.get('socketio');
         const {gameID} = req.params
         // check if valid game
-        if (!mongoose.Types.ObjectId.isValid(gameID)) throw new HandleError(`Giveaway not found`, 404);
+        if (!mongoose.Types.ObjectId.isValid(gameID)) throw new HandleError(`Game not found`, 404);
         const game = await Game.findById(gameID);
         if(!game) throw new HandleError(`Game not found`, 404);
 
@@ -17,7 +18,8 @@ module.exports.newTopic = async (req, res, next) => {
         const newTopic = new Topic({
             subject: subject.trim(),
             topic_body: topic_body.trim(),
-            author: req.user.id
+            author: req.user.id,
+            topic_for: game._id
         })
         // push topic to current user
         const author = await User.findById(req.user.id)
@@ -41,13 +43,30 @@ module.exports.newTopic = async (req, res, next) => {
         }
         // push topic to game group
         game.topics.push(newTopic);
-
         // save all to database
         await game.save();
         await author.save();
         await newTopic.save();
         // response
         res.status(200).json({topicID: newTopic._id})
+    }catch(e) {
+        next(e);
+    }
+}
+
+module.exports.deleteTopic = async (req, res, next) => {
+    try{
+        const {topicID} = req.params;
+        // check if valid Topic
+        if (!mongoose.Types.ObjectId.isValid(topicID)) throw new HandleError(`Topic not found`, 404);
+        const topic = await Topic.findByIdAndDelete(topicID);
+        if(!topic) throw new HandleError(`Topic not found`, 404);
+        // check if this topic is for current user
+        if(!topic.author.equals(req.user.id)) throw new HandleError("This is not your topic, you can't do that", 403);
+        // Remove the topic from the author and game 
+        await User.findByIdAndUpdate(req.user.id, {$pull: { topics: topic._id }});
+        await Game.findByIdAndUpdate(topic.topic_for, {$pull: { topics: topic._id }});
+        res.status(200).json(topic);
     }catch(e) {
         next(e);
     }
