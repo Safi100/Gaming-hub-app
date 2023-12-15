@@ -15,6 +15,11 @@ const topicSchema = new Schema({
         ref: 'User',
         required: [true, 'author is required']
     },
+    topic_for: {
+        type: Schema.Types.ObjectId,
+        ref: 'Game',
+        required: [true, 'game is required']
+    },
     comments: [
         {
             author: {
