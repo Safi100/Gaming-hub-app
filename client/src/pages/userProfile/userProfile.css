@@ -110,9 +110,7 @@
 .profile_main .card{
     box-shadow: none;
 }
-.profile_main .about_user .card-header{
-    border-bottom: 1px solid rgba(118, 118, 118, 0.245);
-}
+
 @media screen and (max-width: 960px) {
     .profile_main{
         flex-wrap: wrap;
@@ -159,10 +157,7 @@
 .rounded-circle {
     border-radius: 50% !important;
 }
-.card {
-    box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
-}
-.card .card-header {
+.profile_main .card .card-header {
     font-weight: 500;
 }
 .card-header:first-child {
