@@ -78,7 +78,6 @@ module.exports.fetchTopic = async (req, res, next) => {
         if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Topic not found`, 404);
         const topic = await Topic.findById(id)
         .populate({path: 'author', select: ['first_name', 'last_name', 'email', 'avatar', 'isAdmin']})
-        .populate({path: 'comments', sort: {createdAt: 1}})
         .populate({path: 'comments.author', select: ['first_name', 'last_name', 'email', 'avatar', 'isAdmin']})
         .populate('topic_for');
         
@@ -100,6 +99,7 @@ module.exports.newComment = async (req, res, next) => {
         const {topicID} = req.params;
         if (!mongoose.Types.ObjectId.isValid(topicID)) throw new HandleError(`Topic not found`, 404);
         const topic = await Topic.findById(topicID)
+        
         if(!topic) throw new HandleError(`Topic not found`, 404);
         const newComment = {
             author: req.user.id,
@@ -107,11 +107,12 @@ module.exports.newComment = async (req, res, next) => {
             createdAt: new Date()
         }
         topic.comments.push(newComment);
-
         // Sorting comments based on createdAt
         topic.comments.sort((a, b) => b.createdAt - a.createdAt);
         
         await topic.save()
+        await topic.populate({path: 'comments.author', select: ['first_name', 'last_name', 'email', 'avatar', 'isAdmin']})
+
         io.emit('NewComment', {topicID:topic._id, comment: topic.comments});
         res.status(200).json(newComment);
     }catch(e) {
