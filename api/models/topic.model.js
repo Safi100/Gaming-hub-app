@@ -29,6 +29,10 @@ const topicSchema = new Schema({
             body: {
                 type: String,
                 required: [true, 'Body is required']
+            },
+            createdAt: {
+                type: Date,
+                default: new Date()
             }
         }
     ]
