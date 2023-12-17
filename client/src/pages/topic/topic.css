@@ -1,0 +1,18 @@
+.topic_card{
+    background: #242526;
+    color: #fff;
+}
+.topic_card .avatar {
+    width: 50px;
+    height: 50px;
+}
+.topic_card .admin{
+    margin-left: 5px;
+    border-radius: 5px;
+}
+.comments{
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
