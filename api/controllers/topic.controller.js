@@ -72,9 +72,48 @@ module.exports.deleteTopic = async (req, res, next) => {
     }
 }
 
-module.exports.newComment = (req, res, next) => {
+module.exports.fetchTopic = async (req, res, next) => {
     try{
+        const {id} = req.params;
+        if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Topic not found`, 404);
+        const topic = await Topic.findById(id)
+        .populate({path: 'author', select: ['first_name', 'last_name', 'email', 'avatar', 'isAdmin']})
+        .populate({path: 'comments', sort: {createdAt: 1}})
+        .populate({path: 'comments.author', select: ['first_name', 'last_name', 'email', 'avatar', 'isAdmin']})
+        .populate('topic_for');
+        
+        // Sorting comments based on createdAt
+        topic.comments.sort((a, b) => b.createdAt - a.createdAt);
 
+        if(!topic) throw new HandleError(`Topic not found`, 404);
+        res.status(200).json(topic);
+    }catch(e) {
+        console.log(e);
+        next(e);
+    }
+}
+
+
+module.exports.newComment = async (req, res, next) => {
+    try{
+        const io = req.app.get('socketio');
+        const {topicID} = req.params;
+        if (!mongoose.Types.ObjectId.isValid(topicID)) throw new HandleError(`Topic not found`, 404);
+        const topic = await Topic.findById(topicID)
+        if(!topic) throw new HandleError(`Topic not found`, 404);
+        const newComment = {
+            author: req.user.id,
+            body: req.body.comment_body.trim(),
+            createdAt: new Date()
+        }
+        topic.comments.push(newComment);
+
+        // Sorting comments based on createdAt
+        topic.comments.sort((a, b) => b.createdAt - a.createdAt);
+        
+        await topic.save()
+        io.emit('NewComment', {topicID:topic._id, comment: topic.comments});
+        res.status(200).json(newComment);
     }catch(e) {
         next(e);
     }
