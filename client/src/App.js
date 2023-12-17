@@ -23,6 +23,7 @@ const Giveaways = lazy(() => import('./pages/giveaways/Giveaways'));
 const EditGiveAway = lazy(() => import('./pages/Admin/EditGiveaway/EditGiveaway'));
 const GiveawayProfile = lazy(() => import('./pages/giveaways/GiveawayProfile'));
 const MyGiveawayPage = lazy(() => import('./pages/giveaways/MyGiveaway'));
+const TopicPage = lazy(() => import('./pages/topic/Topic'));
 
 axios.defaults.withCredentials = true;
 
@@ -42,6 +43,7 @@ function App() {
           <Route path="/admin/add-new-game" element={<NewGame />} />
           <Route path="/admin/games-control" element={<GamesControl />} />
           <Route path="/giveaway/my-giveaway" element={<MyGiveawayPage />} />
+          <Route path="/topic/:id" element={<TopicPage />} />
           <Route path="/giveaway/:id" element={<GiveawayProfile />} />
           <Route path="/admin/edit-giveaway/:id" element={<EditGiveAway />} />
           <Route path="/admin/edit-game/:id" element={<EditGame />} />
