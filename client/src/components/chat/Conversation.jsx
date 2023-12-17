@@ -122,7 +122,7 @@ const Conversation = ({ conversationID }) => {
                             <div>
                                 <p>{conversation.type === 'private' ? conversation.participants.filter(participant => participant._id !== userID).map(participant => (<span className='participant_name' key={participant._id}>{`${participant.first_name} ${participant.last_name}`} {participant.isAdmin ? <span className='admin'>Admin</span> : null} </span> )) 
                                 : `${conversation.title}`}</p>
-                                <p>{conversation.type === 'private' ? `Joined at ${conversation.participants.filter(participant => participant._id !== userID).map(participant => new Date(participant.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric'}))}`
+                                <p>{conversation.type === 'private' ? `Joined on ${conversation.participants.filter(participant => participant._id !== userID).map(participant => new Date(participant.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric'}))}`
                                 : `Created at ${new Date(conversation.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric'})}`}</p>
                             </div>
                         </div>
