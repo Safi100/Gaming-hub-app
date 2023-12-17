@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useParams } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify'
 import { Card } from 'react-bootstrap'
 import io from '../../components/socket'
-import { AuthContext } from '../../context/AuthContext';
-import { stringAvatar } from '../../components/avatar';
-import Avatar from '@mui/material/Avatar';
+import { AuthContext } from '../../context/AuthContext'
+import { stringAvatar } from '../../components/avatar'
+import Avatar from '@mui/material/Avatar'
 import CommentForm from '../../components/topicForm/commentForm'
 import PageLoading from '../../components/loading/PageLoading'
 import Axios from 'axios'
@@ -17,20 +18,44 @@ const Topic = () => {
     const [error, setError] = useState('')
     const {id} = useParams()
 
+    // toast
+    const notify = () => {
+        toast("Comment deleted successfully!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+    }
+
     useEffect(() => {
         // Listen for the "NewComment" event from the server
         io.on('NewComment', ({topicID, comment}) => {
             // Update the state using a functional update to ensure you have the latest state
-            // if (topicID === topic._id) {
+            if (topicID == id) {
                 setTopic((prevTopic) => ({
                     ...prevTopic,
                     comments: comment,
                 }));
-            // }
+            }
         });
+        io.on('DeleteComment', ({topicID, comment}) => {
+            // Update the state using a functional update to ensure you have the latest state
+            if (topicID == id) {
+                setTopic((prevTopic) => ({
+                    ...prevTopic,
+                    comments: comment,
+                }));
+            }
+        })
         // Clean up the socket event listener when the component unmounts
         return () => {
             io.off('NewComment');
+            io.off('DeleteComment');
         };
     }, [io]);
 
@@ -48,9 +73,20 @@ const Topic = () => {
         })
     }, [id])
 
+    const deleteComment = (e, commentID) => {
+        e.preventDefault();
+        Axios.delete(`http://localhost:8000/api/topic/${id}/${commentID}`)
+        .then(res => {
+            io.emit('DeleteComment', {topicID: id})
+            notify()
+        })
+        .catch(err => console.log(err))
+    }
+
     return (
         loading ? <PageLoading /> :
         <div className='wrapper'>
+            <ToastContainer />
             {error ? <h2 className='text-danger'>{error}</h2>
             :
             <div className="topic_info py-4">
@@ -78,8 +114,9 @@ const Topic = () => {
                                 </div>
                                 {/* Delete comment */}
                                 {authContext.currentUser && authContext.currentUser?._id == comment.author._id && 
-                                    <form>
+                                    <form className='d-flex gap-2' onSubmit={(e) => deleteComment(e, comment._id)}>
                                         <button className='btn btn-danger'>Delete</button>
+                                        <input type="checkbox"  required/>
                                     </form>
                                 }
                             </Card.Header>

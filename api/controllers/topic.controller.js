@@ -109,12 +109,45 @@ module.exports.newComment = async (req, res, next) => {
         topic.comments.push(newComment);
         // Sorting comments based on createdAt
         topic.comments.sort((a, b) => b.createdAt - a.createdAt);
-        
+
         await topic.save()
         await topic.populate({path: 'comments.author', select: ['first_name', 'last_name', 'email', 'avatar', 'isAdmin']})
 
         io.emit('NewComment', {topicID:topic._id, comment: topic.comments});
+        // todo: send notification to author of topic about new comment
         res.status(200).json(newComment);
+    }catch(e) {
+        next(e);
+    }
+}
+
+module.exports.deleteComment = async (req, res, next) => {
+    try{
+        const io = req.app.get('socketio');
+        const {topicID, commentID} = req.params;
+        // validate topic
+        if (!mongoose.Types.ObjectId.isValid(topicID)) throw new HandleError(`Topic not found`, 404);
+        const topic = await Topic.findById(topicID)
+        if(!topic) throw new HandleError(`Topic not found`, 404);
+        // validate comment
+        const isExist = topic.comments.some((comment) => comment._id == commentID)
+        if(!isExist) {
+            throw new HandleError(`Comment not found`, 404);
+        }else{
+            const comment = topic.comments.find((comment) => comment._id == commentID);
+            if(!comment) throw new HandleError(`Comment not found`, 404);
+            if(!comment.author.equals(req.user.id)) throw new HandleError("This is not your comment, you can't delete it", 403);
+            // Delete comment from topic comments
+            topic.comments = topic.comments.filter((comment) => comment._id != commentID);
+            // Sorting comments based on createdAt
+            topic.comments.sort((a, b) => b.createdAt - a.createdAt);
+            // Save the updated topic
+            await topic.save()
+            await topic.populate({path: 'comments.author', select: ['first_name', 'last_name', 'email', 'avatar', 'isAdmin']})
+            io.emit('DeleteComment', {topicID:topic._id, comment: topic.comments});
+            res.status(200).json({message: "Topic deleted successfully!", data: comment});
+        }
+
     }catch(e) {
         next(e);
     }
