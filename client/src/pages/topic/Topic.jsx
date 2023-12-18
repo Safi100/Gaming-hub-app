@@ -113,7 +113,8 @@ const Topic = () => {
                                     </div>
                                 </div>
                                 {/* Delete comment */}
-                                {authContext.currentUser && authContext.currentUser?._id == comment.author._id && 
+                                {authContext.currentUser && 
+                                (authContext.currentUser?._id == comment.author._id || authContext.currentUser?.isAdmin ) && 
                                     <form className='d-flex gap-2' onSubmit={(e) => deleteComment(e, comment._id)}>
                                         <button className='btn btn-danger'>Delete</button>
                                         <input type="checkbox"  required/>

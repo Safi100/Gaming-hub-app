@@ -123,6 +123,8 @@ module.exports.newComment = async (req, res, next) => {
 
 module.exports.deleteComment = async (req, res, next) => {
     try{
+        const currentUser = await User.findById(req.user.id);
+
         const io = req.app.get('socketio');
         const {topicID, commentID} = req.params;
         // validate topic
@@ -136,7 +138,7 @@ module.exports.deleteComment = async (req, res, next) => {
         }else{
             const comment = topic.comments.find((comment) => comment._id == commentID);
             if(!comment) throw new HandleError(`Comment not found`, 404);
-            if(!comment.author.equals(req.user.id)) throw new HandleError("This is not your comment, you can't delete it", 403);
+            if (!(comment.author.equals(currentUser._id) || currentUser.isAdmin)) throw new HandleError("You don't have permission to delete it", 403);
             // Delete comment from topic comments
             topic.comments = topic.comments.filter((comment) => comment._id != commentID);
             // Sorting comments based on createdAt
