@@ -90,7 +90,10 @@ const Topic = () => {
             {error ? <h2 className='text-danger'>{error}</h2>
             :
             <div className="topic_info py-4">
-                <h2 className='mb-4'>Topic for <a className='text-success' href={`/game/${topic.topic_for?._id}`}>{topic.topic_for?.title}</a></h2>
+                <div className='mb-4'>
+                    <h2 >Topic for <a className='text-success' href={`/game/${topic.topic_for?._id}`}>{topic.topic_for?.title}</a></h2>
+                    <h3>Author: <a className='text-success' href={`/profile/${topic.author._id}`}>{topic.author.first_name} {topic.author.last_name}</a></h3>
+                </div>
                 <Card className='topic_card'>
                 <Card.Header>{topic.subject}</Card.Header>
                 <Card.Body>
@@ -101,7 +104,7 @@ const Topic = () => {
                 <CommentForm />
                 <div className='comments'>
                     {topic.comments?.map((comment) => (
-                        <Card className='topic_card' key={comment._id}>
+                        <Card className='topic_card' key={comment._id} id={comment._id} >
                             <Card.Header className='d-flex align-items-center justify-content-between'>
                                 <div className='d-flex gap-2 align-items-center'>
                                     <div>{comment.author.avatar ? <img className='avatar' src={comment.author.avatar?.url} alt="avatar url" /> : 
@@ -115,7 +118,7 @@ const Topic = () => {
                                 {/* Delete comment */}
                                 {authContext.currentUser && 
                                 (authContext.currentUser?._id == comment.author._id || authContext.currentUser?.isAdmin ) && 
-                                    <form className='d-flex gap-2' onSubmit={(e) => deleteComment(e, comment._id)}>
+                                <form className='d-flex gap-2' onSubmit={(e) => deleteComment(e, comment._id)}>
                                         <button className='btn btn-danger'>Delete</button>
                                         <input type="checkbox"  required/>
                                     </form>
