@@ -24,6 +24,7 @@ const EditGiveAway = lazy(() => import('./pages/Admin/EditGiveaway/EditGiveaway'
 const GiveawayProfile = lazy(() => import('./pages/giveaways/GiveawayProfile'));
 const MyGiveawayPage = lazy(() => import('./pages/giveaways/MyGiveaway'));
 const TopicPage = lazy(() => import('./pages/topic/Topic'));
+const EditTopic = lazy(() => import('./pages/editTopic/EditTopic'));
 
 axios.defaults.withCredentials = true;
 
@@ -50,6 +51,7 @@ function App() {
           <Route path="/chat/:id" element={<Chat />} /> {/* protected route... */}
           <Route path="/profile/:id" element={<UserProfile />} />
           <Route path="/game/:id" element={<GameProfile />} />
+          <Route path="/topic/:id/edit" element={<EditTopic />} /> {/* protected route... */}
           <Route path="/reset-password/:id/:token" element={<ResetPassword />} /> 
           <Route path="/verify-email/:id/:token" element={<EmailVerify />} />
           <Route path='*' element={<p>There's nothing here: 404!</p>} />  {/* Not found page... */}
