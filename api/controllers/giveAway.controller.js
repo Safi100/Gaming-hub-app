@@ -37,7 +37,7 @@ module.exports.NewGiveAway = async (req, res, next) => {
                 date: new Date()
             }
             user.notifications.push(notification);
-            io.emit('sendNotification', {userID: user._id, noitification: notification});
+            io.emit('sendNotification', {userID: user._id, notification: notification});
             return user.save(); // Save each user individually
         });
         await Promise.all(saveUserPromises); // Wait for all user saves to complete
@@ -214,7 +214,7 @@ cron.schedule('0 * * * *', async (req, res, next) => {
                 user.notifications.push({
                     notification
                 })
-                io.emit('sendNotification', {userID: user._id, noitification: notification});
+                io.emit('sendNotification', {userID: user._id, notification: notification});
                 await user.save();
                 await giveaway.save();
             }
