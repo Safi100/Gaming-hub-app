@@ -25,6 +25,7 @@ const GiveawayProfile = lazy(() => import('./pages/giveaways/GiveawayProfile'));
 const MyGiveawayPage = lazy(() => import('./pages/giveaways/MyGiveaway'));
 const TopicPage = lazy(() => import('./pages/topic/Topic'));
 const EditTopic = lazy(() => import('./pages/editTopic/EditTopic'));
+const NoitficationPage = lazy(() => import('./pages/notifications/Notifications'));
 
 axios.defaults.withCredentials = true;
 
@@ -39,6 +40,7 @@ function App() {
           <Route path="/login" element={<Login /> } />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/giveaway" element={<Giveaways />} />
+          <Route path="/notifications" element={<NoitficationPage />} /> {/* protected route...*/}
           <Route path="/chat" element={<Chat />} /> {/* protected route...*/}
           <Route path="/admin/add-new-giveaway" element={<NewGiveAway />} />
           <Route path="/admin/add-new-game" element={<NewGame />} />
