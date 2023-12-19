@@ -59,7 +59,7 @@ module.exports.deleteTopic = async (req, res, next) => {
         const {topicID} = req.params;
         // check if valid Topic
         if (!mongoose.Types.ObjectId.isValid(topicID)) throw new HandleError(`Topic not found`, 404);
-        const topic = await Topic.findByIdAndDelete(topicID);
+        const topic = await Topic.findById(topicID);
         if(!topic) throw new HandleError(`Topic not found`, 404);
         // check if this topic is for current user or this user is an admin
         const currentUser = await User.findById(req.user.id);
@@ -67,6 +67,7 @@ module.exports.deleteTopic = async (req, res, next) => {
         // Remove the topic from the author and game 
         await User.findByIdAndUpdate(req.user.id, {$pull: { topics: topic._id }});
         await Game.findByIdAndUpdate(topic.topic_for, {$pull: { topics: topic._id }});
+        await Topic.deleteOne({_id: topic._id})
         res.status(200).json(topic);
     }catch(e) {
         next(e);
