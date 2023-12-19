@@ -107,7 +107,6 @@ const Conversation = ({ conversationID }) => {
                                 {conversation.type === 'private' ?
                                 conversation.participants.filter(participant => participant._id !== userID).map(participant => (
                                     <>
-                                    {console.log(participant)}
                                     {participant.avatar ?
                                     <img src={participant.avatar.url} alt="avatar image" />
                                     :
