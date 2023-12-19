@@ -80,11 +80,11 @@ module.exports.fetchTopic = async (req, res, next) => {
         .populate({path: 'author', select: ['first_name', 'last_name', 'email', 'avatar', 'isAdmin']})
         .populate({path: 'comments.author', select: ['first_name', 'last_name', 'email', 'avatar', 'isAdmin']})
         .populate('topic_for');
+        if(!topic) throw new HandleError(`Topic not found`, 404);
         
         // Sorting comments based on createdAt
         topic.comments.sort((a, b) => b.createdAt - a.createdAt);
 
-        if(!topic) throw new HandleError(`Topic not found`, 404);
         res.status(200).json(topic);
     }catch(e) {
         console.log(e);
