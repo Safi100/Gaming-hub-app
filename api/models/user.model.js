@@ -65,7 +65,7 @@ const userSchema = new Schema({
         {
             about: {
                 type: String,
-                enum: ['follow', 'topic', 'comment', 'reply', 'giveaway']
+                enum: ['follow', 'topic', 'giveaway']
             },
             content_id: {
                 type: String,
