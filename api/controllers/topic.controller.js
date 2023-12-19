@@ -99,8 +99,8 @@ module.exports.newComment = async (req, res, next) => {
         const {topicID} = req.params;
         if (!mongoose.Types.ObjectId.isValid(topicID)) throw new HandleError(`Topic not found`, 404);
         const topic = await Topic.findById(topicID)
-        
         if(!topic) throw new HandleError(`Topic not found`, 404);
+
         const newComment = {
             author: req.user.id,
             body: req.body.comment_body.trim(),
@@ -114,7 +114,19 @@ module.exports.newComment = async (req, res, next) => {
         await topic.populate({path: 'comments.author', select: ['first_name', 'last_name', 'email', 'avatar', 'isAdmin']})
 
         io.emit('NewComment', {topicID:topic._id, comment: topic.comments});
-        // todo: send notification to author of topic about new comment
+
+        // send notification to author of topic about new comment
+        const comment_author = await User.findById(req.user.id); // commenter user
+        const user = await User.findById(topic.author._id) // topic author user
+        const notification = {
+            about: "topic",
+            content_id: topic._id,
+            body: `${comment_author.first_name} ${comment_author.last_name} Comment on your topic`,
+            date: new Date()
+        }
+        user.notifications.push(notification)
+        await user.save()
+        io.emit('sendNotification', {userID: user._id, noitification: notification});
         res.status(200).json(newComment);
     }catch(e) {
         next(e);
@@ -149,7 +161,6 @@ module.exports.deleteComment = async (req, res, next) => {
             io.emit('DeleteComment', {topicID:topic._id, comment: topic.comments});
             res.status(200).json({message: "Topic deleted successfully!", data: comment});
         }
-
     }catch(e) {
         next(e);
     }
