@@ -57,11 +57,33 @@ const Games = () => {
         })
         
     }, [authContext.currentUser, page, search])
-    // delete game
-    // todo : later
-    const deleteGame = (gameID) => {
 
+    // delete game
+    const deleteGame = (gameID) => {
+        Axios.delete(`http://localhost:8000/api/game/${gameID}`)
+        .then(() => {
+            setGames(prevGames => prevGames.filter(game => game._id !== gameID))
+            notify()
+        })
+        .catch(err => {
+            console.log(err);
+        })
     }
+
+    // toast
+    const notify = () => {
+        toast("Game deleted successfully!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+    }
+
     return (
         loading ? <PageLoading /> :
         <>
@@ -88,7 +110,7 @@ const Games = () => {
                                 <div className="buttons">
                                     <a href={`/game/${game._id}`}>Go to game group</a>
                                     <a href={`/admin/edit-game/${game._id}`} >Edit Game</a>
-                                    <button>Delete Game</button>
+                                    <button onClick={()=> deleteGame(game._id)}>Delete Game</button>
                                 </div>
                             </div>
                         </div>
