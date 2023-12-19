@@ -30,11 +30,14 @@ module.exports.NewGiveAway = async (req, res, next) => {
         // send notification for users that have this game in favorites games
         const users = await User.find({"favorite_games": { $in: [game] }});
         const saveUserPromises = users.map(user => {
-            user.notifications.push({
+            const notification = {
                 content_id: newGiveAway._id.toString(),
                 body: `New Giveaway for ${newGiveAway.game.title}`,
                 about: 'giveaway',
-            });
+                date: new Date()
+            }
+            user.notifications.push(notification);
+            io.emit('sendNotification', {userID: user._id, noitification: notification});
             return user.save(); // Save each user individually
         });
         await Promise.all(saveUserPromises); // Wait for all user saves to complete
