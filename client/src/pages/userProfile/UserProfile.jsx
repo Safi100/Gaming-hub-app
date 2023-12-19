@@ -128,7 +128,6 @@ const UserProfile = () => {
                         <div className='buttons'>
                             { (currentUser && currentUser?._id !== user._id) && ( <>
                                 <button className='contact' onClick={() => FetchOrCreateConversation(user._id) } ><MessageIcon /> Contact</button>
-                                <button className='report'>Report</button>
                             </> )}
                             { (currentUser && currentUser?._id === user._id) && (
                                 <button className='edit_btn' onClick={()=> setOpenEdit(true)}>Edit profile</button>
