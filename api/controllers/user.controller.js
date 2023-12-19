@@ -37,6 +37,7 @@ module.exports.searchForUsers = async (req, res, next) => {
 }
 module.exports.follow_unfollow_user = async (req, res, next) => {
   try{
+    const io = req.app.get('socketio');
     const {id} = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`User not found`, 404);
     const user = await User.findById(id)
@@ -54,6 +55,7 @@ module.exports.follow_unfollow_user = async (req, res, next) => {
         about: "follow"
       }
       user.notifications.push(notification);
+      io.emit('sendNotification', { userID: user._id, notification: notification });
     }else{
       // remove user from followers
       user.followers = user.followers.filter(followerId => followerId != req.user.id);
@@ -147,5 +149,15 @@ module.exports.changePassword = async (req, res, next) => {
     res.status(200).send('Password changed successfully.');
   }catch(e){
     next(e)
+  }
+}
+module.exports.clearNotifications = async (req, res, next) => {
+  try{
+    const user = await User.findById(req.user.id);
+    user.notifications = [];
+    await user.save();
+    res.status(200).send(user.notifications)
+  }catch(e){
+    next(e);
   }
 }
