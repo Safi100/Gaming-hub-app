@@ -77,10 +77,17 @@ module.exports.deleteTopic = async (req, res, next) => {
 module.exports.updateTopic = async (req, res, next) => {
     try {
         const {id} = req.params;
+        const {subject, topic_body} = req.body;
         if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Topic not found`, 404);
         const topic = await Topic.findById(id)
         if(!topic) throw new HandleError(`Topic not found`, 404);
-
+        // check if the topic for this current user
+        if(!topic.author.equals(req.user.id)) throw new HandleError(`You don't have permission to update this topic`, 403);
+        
+        topic.subject = subject.trim();
+        topic.topic_body = topic_body.trim();
+        await topic.save();
+        res.status(200).send({ message: 'topic updated successfully!'})
     }catch(e) {
         next(e);
     }
