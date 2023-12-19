@@ -100,12 +100,16 @@ const Topic = () => {
             </Card.Body>
             <Card.Footer>Created on {new Date(topic.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' , hour: 'numeric', minute: 'numeric'})}</Card.Footer>
             </Card>
-            <CommentForm />
+
+            {/* Comment section if current user is logged in */}
+            {authContext.currentUser && <CommentForm />}
+
             <div className='comments'>
+            <h3 className='fs-5 m-0'>Comments</h3>
             {topic.comments?.map((comment) => (
                 <Card className='topic_card' key={comment._id} id={comment._id} >
                         <Card.Header className='d-flex align-items-center justify-content-between'>
-                            <div className='d-flex gap-2 align-items-center'>
+                            <a href={`/profile/${comment.author?._id}`} className='d-flex gap-2 align-items-center'>
                                 <div>{comment.author.avatar ? <img className='avatar' src={comment.author.avatar?.url} alt="avatar url" /> : 
                                     <Avatar variant='square' {...stringAvatar(`${comment.author?.first_name} ${comment.author?.last_name}`)} />                                    
                                 }</div>
@@ -113,7 +117,7 @@ const Topic = () => {
                                     <p>{comment.author.first_name} {comment.author.last_name} {comment.author.isAdmin && <span className='admin px-2 bg-primary'>Admin</span>}</p>
                                     <p>{comment.author.email}</p>
                                 </div>
-                            </div>
+                            </a>
                             {/* Delete comment */}
                             {authContext.currentUser && 
                             (authContext.currentUser?._id == comment.author._id || authContext.currentUser?.isAdmin ) && 
