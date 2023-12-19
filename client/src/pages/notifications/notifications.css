@@ -1,0 +1,11 @@
+.notifications{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.notifications a > *{
+    background: #242526 !important;
+    color: #fff !important;
+    border: 1px solid white !important;
+}
