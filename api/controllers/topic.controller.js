@@ -137,20 +137,22 @@ module.exports.newComment = async (req, res, next) => {
 
         io.emit('NewComment', {topicID:topic._id, comment: topic.comments});
 
-        // send notification to author of topic about new comment
+        // send notification to author of topic about new comment if comment author not topic author
         const comment_author = await User.findById(req.user.id); // commenter user
         const user = await User.findById(topic.author._id) // topic author user
-        const notification = {
-            about: "topic",
-            content_id: topic._id,
-            body: `${comment_author.first_name} ${comment_author.last_name} Comment on your topic`,
-            date: new Date()
+        if(comment_author._id.toString() !== user._id.toString()) {
+            const notification = {
+                about: "topic",
+                content_id: topic._id,
+                body: `${comment_author.first_name} ${comment_author.last_name} Comment on your topic`,
+                date: new Date()
+            }
+            user.notifications.push(notification)
+            io.emit('sendNotification', {userID: user._id, notification: notification});
+            await user.save()
         }
-        user.notifications.push(notification)
-        await user.save()
-        io.emit('sendNotification', {userID: user._id, noitification: notification});
         res.status(200).json(newComment);
-    }catch(e) {
+        }catch(e) {
         next(e);
     }
 }
