@@ -68,8 +68,7 @@ const Topic = () => {
         })
         .catch(err => {
             setLoading(false)
-            setError(err.res.data)
-            console.log(err)
+            setError(err.response.data)
         })
     }, [id])
 
@@ -86,55 +85,56 @@ const Topic = () => {
     return (
         loading ? <PageLoading /> :
         <div className='wrapper'>
-            <ToastContainer />
-            {error ? <h2 className='text-danger'>{error}</h2>
-            :
-            <div className="topic_info py-4">
-                <div className='mb-4'>
-                    <h2 >Topic for <a className='text-success' href={`/game/${topic.topic_for?._id}`}>{topic.topic_for?.title}</a></h2>
-                    <h3>Author: <a className='text-success' href={`/profile/${topic.author._id}`}>{topic.author.first_name} {topic.author.last_name}</a></h3>
-                </div>
-                <Card className='topic_card'>
-                <Card.Header>{topic.subject}</Card.Header>
-                <Card.Body>
-                    <Card.Text><p dangerouslySetInnerHTML={{ __html: topic.topic_body?.replace(/\n/g, '<br>')}} /></Card.Text>
-                </Card.Body>
-                <Card.Footer>Created on {new Date(topic.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' , hour: 'numeric', minute: 'numeric'})}</Card.Footer>
-                </Card>
-                <CommentForm />
-                <div className='comments'>
-                    {topic.comments?.map((comment) => (
-                        <Card className='topic_card' key={comment._id} id={comment._id} >
-                            <Card.Header className='d-flex align-items-center justify-content-between'>
-                                <div className='d-flex gap-2 align-items-center'>
-                                    <div>{comment.author.avatar ? <img className='avatar' src={comment.author.avatar?.url} alt="avatar url" /> : 
-                                        <Avatar variant='square' {...stringAvatar(`${comment.author?.first_name} ${comment.author?.last_name}`)} />                                    
-                                    }</div>
-                                    <div>
-                                        <p>{comment.author.first_name} {comment.author.last_name} {comment.author.isAdmin && <span className='admin px-2 bg-primary'>Admin</span>}</p>
-                                        <p>{comment.author.email}</p>
-                                    </div>
-                                </div>
-                                {/* Delete comment */}
-                                {authContext.currentUser && 
-                                (authContext.currentUser?._id == comment.author._id || authContext.currentUser?.isAdmin ) && 
-                                <form className='d-flex gap-2' onSubmit={(e) => deleteComment(e, comment._id)}>
-                                        <button className='btn btn-danger'>Delete</button>
-                                        <input type="checkbox"  required/>
-                                    </form>
-                                }
-                            </Card.Header>
-                            <Card.Body>
-                                <Card.Text><p dangerouslySetInnerHTML={{ __html: comment.body?.replace(/\n/g, '<br>')}} /></Card.Text>
-                            </Card.Body>
-                            <Card.Footer>{new Date(comment.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' , hour: 'numeric', minute: 'numeric', second: 'numeric'})}</Card.Footer>
-                        </Card>
-                    ))}
-                </div>
+        <ToastContainer />
+        {error ? <h2 className='text-danger py-5'>{error}</h2>
+        :
+        <div className="topic_info py-4">
+            <div className='mb-4'>
+                <h2 >Topic for <a className='text-success' href={`/game/${topic.topic_for?._id}`}>{topic.topic_for?.title}</a></h2>
+                <h3>Author: <a className='text-success' href={`/profile/${topic.author?._id}`}>{topic.author?.first_name} {topic.author?.last_name}</a></h3>
             </div>
-            }
+            <Card className='topic_card'>
+            <Card.Header>{topic.subject}</Card.Header>
+            <Card.Body>
+            <Card.Text><p dangerouslySetInnerHTML={{ __html: topic.topic_body?.replace(/\n/g, '<br>')}} /></Card.Text>
+            </Card.Body>
+            <Card.Footer>Created on {new Date(topic.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' , hour: 'numeric', minute: 'numeric'})}</Card.Footer>
+            </Card>
+            <CommentForm />
+            <div className='comments'>
+            {topic.comments?.map((comment) => (
+                <Card className='topic_card' key={comment._id} id={comment._id} >
+                        <Card.Header className='d-flex align-items-center justify-content-between'>
+                            <div className='d-flex gap-2 align-items-center'>
+                                <div>{comment.author.avatar ? <img className='avatar' src={comment.author.avatar?.url} alt="avatar url" /> : 
+                                    <Avatar variant='square' {...stringAvatar(`${comment.author?.first_name} ${comment.author?.last_name}`)} />                                    
+                                }</div>
+                                <div>
+                                    <p>{comment.author.first_name} {comment.author.last_name} {comment.author.isAdmin && <span className='admin px-2 bg-primary'>Admin</span>}</p>
+                                    <p>{comment.author.email}</p>
+                                </div>
+                            </div>
+                            {/* Delete comment */}
+                            {authContext.currentUser && 
+                            (authContext.currentUser?._id == comment.author._id || authContext.currentUser?.isAdmin ) && 
+                            <form className='d-flex gap-2' onSubmit={(e) => deleteComment(e, comment._id)}>
+                                    <button className='btn btn-danger'>Delete</button>
+                                    <input type="checkbox"  required/>
+                                </form>
+                            }
+                        </Card.Header>
+                        <Card.Body>
+                            <Card.Text><p dangerouslySetInnerHTML={{ __html: comment.body?.replace(/\n/g, '<br>')}} /></Card.Text>
+                        </Card.Body>
+                        <Card.Footer>{new Date(comment.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' , hour: 'numeric', minute: 'numeric', second: 'numeric'})}</Card.Footer>
+                    </Card>
+                ))}
+            </div>
         </div>
-    );
-}
-
-export default Topic;
+        }
+        </div>
+        );
+    }
+    
+    export default Topic;
+    
