@@ -61,12 +61,26 @@ module.exports.deleteTopic = async (req, res, next) => {
         if (!mongoose.Types.ObjectId.isValid(topicID)) throw new HandleError(`Topic not found`, 404);
         const topic = await Topic.findByIdAndDelete(topicID);
         if(!topic) throw new HandleError(`Topic not found`, 404);
-        // check if this topic is for current user
-        if(!topic.author.equals(req.user.id)) throw new HandleError("This is not your topic, you can't do that", 403);
+        // check if this topic is for current user or this user is an admin
+        const currentUser = await User.findById(req.user.id);
+        if (!(topic.author.equals(currentUser._id) || currentUser.isAdmin)) throw new HandleError("You don't have permission to delete it", 403);
         // Remove the topic from the author and game 
         await User.findByIdAndUpdate(req.user.id, {$pull: { topics: topic._id }});
         await Game.findByIdAndUpdate(topic.topic_for, {$pull: { topics: topic._id }});
         res.status(200).json(topic);
+    }catch(e) {
+        next(e);
+        console.log(e);
+    }
+}
+
+module.exports.updateTopic = async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Topic not found`, 404);
+        const topic = await Topic.findById(id)
+        if(!topic) throw new HandleError(`Topic not found`, 404);
+
     }catch(e) {
         next(e);
     }

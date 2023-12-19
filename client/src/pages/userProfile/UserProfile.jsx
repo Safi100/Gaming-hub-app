@@ -145,7 +145,7 @@ const UserProfile = () => {
                                 <th scope="col">Topic</th>
                                 <th scope="col">Comments</th>
                                 <th scope="col">Date</th>
-                                {currentUser?._id === user._id && <th scope="col">Control</th>}
+                                {(currentUser?._id === user._id || currentUser.isAdmin) && <th scope="col">Control</th>}
                             </tr>
                         </thead>
                         <tbody>
@@ -154,12 +154,13 @@ const UserProfile = () => {
                                 <td className='link'><a className='w-100 topic_subject' href={`/topic/${topic._id}`}>{topic.subject}</a></td>
                                 <td>{topic.comments.length}</td>
                                 <td>{new Date(topic.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: '2-digit', hour: 'numeric', minute: 'numeric'})}</td>
-                                {currentUser?._id === topic.author._id && 
-                                <td>
+                                {(currentUser?._id === topic.author._id || currentUser.isAdmin) && 
+                                <td className='d-flex gap-3'>
                                     <form className='d-flex gap-2' onSubmit={(e) => deleteTopic(e, topic._id)}>
                                         <button className='btn btn-sm btn-danger'>Delete topic</button>
                                         <input name='TOPIC' type='checkbox' required />
                                     </form>
+                                    {currentUser?._id === topic.author._id && <a href={`/topic/${topic._id}/edit`}>Edit topic</a>}
                                 </td>
                                 }
                             </tr>
