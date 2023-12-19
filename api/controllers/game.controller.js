@@ -3,6 +3,7 @@ const User = require('../models/user.model');
 const { cloudinary } = require('../utils/cloudinary');
 const mongoose = require('mongoose');
 const HandleError = require('../utils/HandleError');
+
 module.exports.fetchGamesID = async (req, res, next) => {
     try{
         const games = await Game.find().select(['title']);
@@ -174,6 +175,33 @@ module.exports.toggle_favorite_game = async (req, res, next) => {
         }
         await currentUser.save();
         res.status(200).json(currentUser.favorite_games)
+    }catch(e){
+        next(e);
+    }
+}
+module.exports.deleteGame = async (req, res, next) => {
+    try{
+        const currentUser = await User.findById(req.user.id);
+        if(currentUser.isAdmin !== true) throw new HandleError(`You don't have permission to delete this game`, 403);
+        
+        const {id} = req.params
+        if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`Game not found`, 404);
+        const game = await Game.findByIdAndDelete(id)
+        if(!game) throw new HandleError(`Game not found`, 404);
+        // delete game
+        const users = await User.find({"favorite_games": { $in: [game._id] }});
+        const saveUserPromises = users.map(user => {
+            // remove game from favorites
+            user.favorite_games = user.favorite_games.filter(gameID => !gameID.equals(game._id));
+            return user.save(); // Save each user individually
+        });
+        await Promise.all(saveUserPromises); // Wait for all user saves to complete
+        
+        // Delete both images from Cloudinary
+        await cloudinary.uploader.destroy(game.main_photo.filename);
+        await cloudinary.uploader.destroy(game.cover_photo.filename);
+
+        res.status(200).send(game);
     }catch(e){
         next(e);
     }
