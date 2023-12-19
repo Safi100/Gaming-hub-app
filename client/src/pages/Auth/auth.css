@@ -90,12 +90,19 @@
   cursor: pointer;
   margin-bottom: 10px;
 }
+.verify_dev {
+  color: #fff;
+}
+.verify_dev a{
+  color: #4cc731;
+  text-decoration: underline;
+}
 .form .error, .verify_dev .error{
   margin-top: 10px;
   color: red;
 }
 .form .success, .verify_dev .success{
-  margin-top: 10px;
+  margin: 10px 0;
   color: #4cc731;
 }
 .gender_input .gender_dev{
@@ -127,7 +134,7 @@
 .auth_container .verify_dev{
   position: relative;
   width: 90%;
-  /* min-height: 454px; */
+  margin: 0 auto;
   background: #343438;
   max-width: 500px;
   padding: 30px 20px;
