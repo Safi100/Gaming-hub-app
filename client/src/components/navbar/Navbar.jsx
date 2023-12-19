@@ -124,9 +124,6 @@ function Navbar() {
                 <MenuItem onClick={handleCloseNavMenu}>
                   <Link to={'/'}>Home</Link>
                 </MenuItem>
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <Link to={'/'}>Live Player Listings</Link>
-                </MenuItem>
                 { currentUser?.isAdmin &&
                   <MenuItem onClick={handleCloseNavMenu}>
                   <Link to={'/admin/add-new-game'}>Add New Game</Link>
