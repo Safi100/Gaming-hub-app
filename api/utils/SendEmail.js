@@ -11,7 +11,7 @@ module.exports.sendEmail = async (email, subject, text) => {
         }
       });
       var mailOptions = {
-        from: 'gamingHub.safi@gmail.com',
+        from: process.env.EMAIL_USER,
         to: email,
         subject: subject,
         html: text
