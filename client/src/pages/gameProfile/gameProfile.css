@@ -46,7 +46,7 @@
 .game_details .game_properties span{
     font-weight: 700;
 }
-.game .buttons button{
+.gameProfile .game .buttons button{
     padding: 10px;
     cursor: pointer;
     width: 152px;
