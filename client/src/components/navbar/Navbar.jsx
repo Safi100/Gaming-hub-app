@@ -1,26 +1,20 @@
 import React, { useState, useContext, useEffect } from 'react'; // Import useState
 import { Link } from 'react-router-dom'
-import Axios from 'axios'
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
+import {Badge, MenuItem, Box, Menu, IconButton, Avatar, Tooltip, ListItemIcon, Divider} from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import SearchIcon from '@mui/icons-material/Search';
-import Badge from '@mui/material/Badge';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
+import SearchIcon from '@mui/icons-material/Search';
 import Logout from '@mui/icons-material/Logout';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import { stringAvatar } from '../avatar';
 import Loading from '../loading/Loading';
+import Logo from '../../assets/logo.png';
+import Axios from 'axios'
 import { AuthContext } from '../../context/AuthContext'; 
 import { ChatContext } from '../../context/ChatContext'; 
-import Logo from '../../assets/logo.png';
+import { NotificationContext } from '../../context/NotificationContext';
 import './navbar.css'
-// SEARCH RESULTS
+// SEARCH RESULTS DIV
 import UserSearch from '../search/UserSearch';
 import GameSearch from '../search/GameSearch';
 
@@ -57,6 +51,7 @@ function Navbar() {
   };
 
   const chatContext = useContext(ChatContext);
+  const notificationContext = useContext(NotificationContext);
 
   // search
   const handleSearch = (e) => {
@@ -183,6 +178,11 @@ function Navbar() {
           <div className="right">
           {currentUser ?
           <>
+            <Link to='/notifications'> 
+            <Badge badgeContent={notificationContext.notifications.length} max={99} color='success' sx={{cursor:'pointer'}}>
+              <NotificationsIcon sx={{color:'#fff'}}/>
+            </Badge>
+            </Link>
             <Link to='/chat'>
             <Badge badgeContent={chatContext.unreadCount} max={99} color='success' sx={{cursor:'pointer'}}>
               <ChatBubbleIcon sx={{color:'#fff'}}/>
