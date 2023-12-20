@@ -129,7 +129,7 @@
 }
 .form a{
   text-decoration: none;
-  color: #4cc731;
+  color: #4cc731 !important;
 }
 .auth_container .verify_dev{
   position: relative;

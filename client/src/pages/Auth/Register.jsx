@@ -106,6 +106,10 @@ const Register = () => {
                     </div>
                     </div>
                 </div>
+                <div className='d-flex gap-2 my-2 mt-3'>
+                <input type="checkbox" required/>
+                <p>See <a href="/help">help page</a> before.</p>
+                </div>
                 {error && <p className='error'>{error}</p>}
                 {message && <p className='success'>{message}</p>}
                 <button>Create Account</button>
