@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import Axios from 'axios';
 import { AuthContext } from './AuthContext';
-import NotificationSound from '../assets/notification_sound.wav';
 import io from '../components/socket';
 
 // Create the NotificationContext with an initial value of an empty array
@@ -20,7 +19,6 @@ export const NotificationContextProvider = ({ children }) => {
   // get notifications live from socket
   useEffect(() => {
     io.on('sendNotification', ({userID, notification}) => {
-        // new Audio(NotificationSound).play();
         if(currentUser._id == userID) {
           console.log(notification);
             setCurrentUser(prevCurrentUser => ({
