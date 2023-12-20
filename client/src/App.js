@@ -26,6 +26,7 @@ const MyGiveawayPage = lazy(() => import('./pages/giveaways/MyGiveaway'));
 const TopicPage = lazy(() => import('./pages/topic/Topic'));
 const EditTopic = lazy(() => import('./pages/editTopic/EditTopic'));
 const NoitficationPage = lazy(() => import('./pages/notifications/Notifications'));
+const HelpPage = lazy(() => import('./pages/help/Help'));
 
 axios.defaults.withCredentials = true;
 
@@ -36,6 +37,7 @@ function App() {
     <Suspense>
         <Routes>
           <Route path="/" exact element={<Home />} />
+          <Route path="/help" element={<HelpPage /> } />
           <Route path="/register" element={<Register /> } />
           <Route path="/login" element={<Login /> } />
           <Route path="/forgot-password" element={<ForgotPassword />} />

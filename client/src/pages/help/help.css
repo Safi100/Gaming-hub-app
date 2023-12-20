@@ -1,0 +1,8 @@
+.help li{
+    list-style: disc;
+}
+.help h3 {
+    border-left: 5px solid green;
+    padding: 3px 0;
+    padding-left: 10px;
+}
