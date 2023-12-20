@@ -9,6 +9,7 @@
 .navbar_container .logo{
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
 }
 .logo .logo_a{
     display: flex;
@@ -23,6 +24,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
     gap: 30px;
 }
 .navbar_container .top .left{
