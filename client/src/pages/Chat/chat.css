@@ -36,6 +36,10 @@
     margin-bottom: 40px;
     color: #fff;
 }
+.side_list .btn{
+    background: #3a3b3c;
+    border-radius: 5px;
+}
 .search .search_results{
     position: absolute;
     overflow-y: auto;
