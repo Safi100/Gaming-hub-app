@@ -147,6 +147,9 @@ function Navbar() {
                   <Link to={'/giveaway/my-giveaway'}>My giveaways</Link>
                 </MenuItem>
                 }
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Link to={'/help'}>Help</Link>
+                </MenuItem>
               </Menu>
               </span>
             </div>
