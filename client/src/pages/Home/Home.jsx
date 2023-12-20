@@ -55,7 +55,7 @@ const Home = () => {
             {admins?.length > 0 &&
             <div className='mb-4'>
                 <h2 className='fs-1 mb-0'>Admins</h2>
-                <p className='mb-3'>Note: Send your suggestion game for admins.</p>
+                <p className='mb-3'>Note: Send your suggested game for admins.</p>
                 <div className='admins'>
                     {admins.map(admin => (
                         <a href={`/profile/${admin._id}`} className='participant' key={admin._id}>
