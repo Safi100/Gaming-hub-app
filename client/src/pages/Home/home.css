@@ -1,0 +1,39 @@
+.home .games{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+.home .games .game{
+    width: 150px;
+    box-shadow: 0px 0px 6px 0px #ffffff4d;
+}
+.home .games .game img{
+    height: 100%;
+    object-fit: contain;
+}
+.home .admins{
+    background: #242526;
+    max-width: 500px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.home .admins a{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 3px;
+}
+.home .admins a img{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+.home .admins a:hover{
+    background: #18191a;
+}
+.admin_sign{
+    border-radius: 5px;
+    padding: 0px 5px;
+}
