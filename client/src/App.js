@@ -1,5 +1,5 @@
-import React, {lazy, Suspense, useEffect} from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from './components/navbar/Navbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -31,9 +31,21 @@ const HelpPage = lazy(() => import('./pages/help/Help'));
 axios.defaults.withCredentials = true;
 
 function App() {
+  const location = useLocation();
+  const [showNavbar, setShowNavbar] = useState(true);
+  
+  useEffect(() => {
+    // Hide Navbar on Login and Register routes
+    if (location.pathname.includes('/login') || location.pathname.includes('/register') || location.pathname.includes('/chat')) {
+      setShowNavbar(false);
+    } else {
+      setShowNavbar(true);
+    }
+  }, [location]);
+
   return (
   <>
-    <Navbar />
+    {showNavbar && <Navbar />}
     <Suspense>
         <Routes>
           <Route path="/" exact element={<Home />} />
