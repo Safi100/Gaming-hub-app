@@ -87,16 +87,16 @@ const EditTopic = () => {
 
     return (
         pageLoading ? <PageLoading /> :
-        <div className='wrapper'>
+        <div className='wrapper py-5'>
         <ToastContainer />
         {error ? <h2 className='text-danger py-5'>{error}</h2>
         :
-        !(topic.author?._id == authContext.currentUser?._id) ? <NoPermission /> : 
-        <Form className='editTopic_form py-5' noValidate validated={validated} onSubmit={handleSubmit} >
-            <div className='mb-5'>
-                <h2 className='fs-5'>Update your topic</h2>
-                <p>visit your topic <a className='text-success' href={`/topic/${topic._id}`}>here</a></p>
-            </div>
+        !(topic.author?._id == authContext.currentUser?._id) ? <NoPermission /> : <>
+        <div className='mb-5'>
+            <h2 className='fs-5'>Update your topic</h2>
+            <p>visit your topic <a className='text-success' href={`/topic/${topic._id}`}>here</a></p>
+        </div>
+        <Form className='editTopic_form p-3' noValidate validated={validated} onSubmit={handleSubmit} >
             <Form.Group as={Col} className='mb-3' md="12" controlId="validationCustom01">
             <Form.Label>Subject</Form.Label>
             <Form.Control name="subject" value={formData.subject} onChange={handleInputChange} required type="text" placeholder='Type a subject for your new topic...' />
@@ -122,6 +122,7 @@ const EditTopic = () => {
                 </> }
             </Button>
         </Form>
+        </>
         }
         </div>
     );
