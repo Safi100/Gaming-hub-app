@@ -43,7 +43,7 @@ const Chat = () => {
     <div className='chat_bg'>
       <div className='chat_container'>
         <div className='side_list'>
-          <a className='btn mb-3' href="/home">Return to home page</a>
+          <a className='btn mb-3' href="/">Return to home page</a>
           <SearchChatResult />
           <div className='conversations'>
             {conversations?.map(conversation => (
