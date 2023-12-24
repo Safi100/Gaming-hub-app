@@ -4,6 +4,7 @@ const User = require('../models/user.model');
 const BannedUsers = require('../models/bannedUsers.model');
 const bcrypt = require('bcrypt');
 const {cloudinary} = require('../utils/cloudinary');
+const cron = require('node-cron');
 
 module.exports.fetchCurrentUser = async (req, res, next) => {
   try{
@@ -235,3 +236,20 @@ module.exports.removeBan = async (req, res, next) => {
     next(e);
   }
 }
+
+// Schedule a job to run every hour (at the beginning of each hour)
+cron.schedule('0 * * * *', async () => {
+  try {
+    const bannedUsers = await BannedUsers.find();
+    bannedUsers.forEach(async (user) => {
+      // null ban date mean it's ban forever
+      if (user.bannedUntil && new Date(user.bannedUntil) < new Date()) {
+        // If bannedUntil is not null and the date has passed
+        await BannedUsers.deleteOne({ _id: user._id });
+        console.log(`Remove ban on user with ID: ${user._id}`);
+      }
+    });
+  } catch (e) {
+    console.error(e);
+  }
+});
