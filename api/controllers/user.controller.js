@@ -1,13 +1,29 @@
 const HandleError = require('../utils/HandleError');
 const mongoose = require('mongoose');
 const User = require('../models/user.model');
+const BannedUsers = require('../models/bannedUsers.model');
 const bcrypt = require('bcrypt');
 const {cloudinary} = require('../utils/cloudinary');
 
 module.exports.fetchCurrentUser = async (req, res, next) => {
   try{
-    const currentUser = await User.findById(req.user.id).select(['-isVerified', '-password', '-updatedAt'])
-    res.status(200).json(currentUser)
+    let isBanned = false;
+    let banDetails;
+    const currentUser = await User.findById(req.user.id)
+    .select(['-isVerified', '-password', '-updatedAt', '-createdAt', '-followers', '-topics'])
+    const bannedUsers = await BannedUsers.find()
+    bannedUsers.forEach(bannedUser => {
+      console.log(bannedUser);
+      if(currentUser._id == bannedUser.user.toString()) {
+        isBanned = true;
+        banDetails = {
+          bannedUntil: bannedUser.bannedUntil,
+          reason: bannedUser.reason,
+          bannedFrom: bannedUser.createdAt
+        }
+      }
+    })
+    res.status(200).json({currentUser, isBanned, banDetails})
   }catch(e){
     next(e);
   }
@@ -39,9 +55,9 @@ module.exports.follow_unfollow_user = async (req, res, next) => {
   try{
     const io = req.app.get('socketio');
     const {id} = req.params;
+    // Handling error
     if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`User not found`, 404);
     const user = await User.findById(id)
-    // Hamdling error
     if(!user) throw new HandleError(`User not found`, 404)
     if(req.user.id == user._id) throw new HandleError(`You can't follow/unfollow your self -_-`, 400)
     const currentUser = await User.findById(req.user.id);
@@ -157,6 +173,58 @@ module.exports.clearNotifications = async (req, res, next) => {
     user.notifications = [];
     await user.save();
     res.status(200).send(user.notifications)
+  }catch(e){
+    next(e);
+  }
+}
+module.exports.banUser = async (req, res, next) => {
+  try{
+    const {id} = req.params; 
+    const {reason} = req.body;
+    const days = req.body.days || undefined;
+    // Handling error
+    if(days < 1 && days != undefined) throw new HandleError(`Choose a valid day, greater or than 1 day or for permanent leave it empty`);
+    if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`User not found`, 404);
+    const user = await User.findById(id)
+    if(!user) throw new HandleError(`User not found`, 404)
+    if(user.isAdmin) throw new HandleError(`You can't ban an administrator`, 401)
+    // new document
+    const NewBannedUser = new BannedUsers({
+      user: id,
+      reason: reason.trim(),
+      bannedUntil: days ? new Date(Date.now() + days * 24 * 60 * 60 * 1000) : null,
+    })
+    // save document and send it in response
+    await NewBannedUser.populate({path: 'user', select:['first_name', 'last_name', 'email', 'avatar'] })
+    await NewBannedUser.save();
+    res.status(200).json(NewBannedUser);
+  } catch (error) {
+    if (error.code === 11000) {
+      next(new HandleError('User already banned', 401));
+    } else {
+      next(error);
+    }
+  }
+}
+module.exports.bannedUsers = async (req, res, next) => {
+  try {
+    const bannedUsers = await BannedUsers.find().populate({path: 'user', select:['first_name', 'last_name', 'email', 'avatar'] })
+    res.status(200).json(bannedUsers);
+  }catch(e){
+    next(e);
+  }
+}
+module.exports.removeBan = async (req, res, next) => {
+  try {
+    const {id} = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`User not found`, 404);
+    const user = await User.findById(id)
+    if(!user) throw new HandleError(`User not found`, 404)
+
+    const bannedUser = await BannedUsers.findOneAndDelete({user: id});
+    if(!bannedUser) throw new HandleError(`User is not banned`, 404)
+    
+    res.status(200).json(bannedUser);
   }catch(e){
     next(e);
   }
