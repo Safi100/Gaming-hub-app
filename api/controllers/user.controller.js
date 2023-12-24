@@ -13,7 +13,6 @@ module.exports.fetchCurrentUser = async (req, res, next) => {
     .select(['-isVerified', '-password', '-updatedAt', '-createdAt', '-followers', '-topics'])
     const bannedUsers = await BannedUsers.find()
     bannedUsers.forEach(bannedUser => {
-      console.log(bannedUser);
       if(currentUser._id == bannedUser.user.toString()) {
         isBanned = true;
         banDetails = {
@@ -76,7 +75,6 @@ module.exports.follow_unfollow_user = async (req, res, next) => {
       // remove user from followers
       user.followers = user.followers.filter(followerId => followerId != req.user.id);
     }
-    await user.populate({path: 'followers', select: ['first_name', 'last_name', 'avatar', 'email', 'isAdmin']})
     await user.save();
     res.status(200).json(user.followers);
   }catch(e){
@@ -88,11 +86,19 @@ module.exports.fetchUserDataProfile = async (req, res, next) => {
   try{
       const {id} = req.params;
       if (!mongoose.Types.ObjectId.isValid(id)) throw new HandleError(`User not found`, 404);
-      const user = await User.findById(id).select(['-isVerified', '-password', '-updatedAt'])
-      .populate({path: 'followers', select: ['first_name', 'last_name', 'avatar', 'email', 'isAdmin']})
-      .populate({path: 'favorite_games', select: ['title', 'main_photo']})
-      .populate({path: 'topics', populate: {path: 'author', select: ['first_name', 'last_name', 'avatar', 'isAdmin', 'email']}});
+      let user = await User.findById(id).select(['-isVerified', '-password', '-updatedAt', '-notifications'])
+      .populate({path: 'favorite_games', select: ['title']})
+      .populate({path: 'topics', populate: {path: 'author', select: ["_id"]}});
       if(!user) throw new HandleError(`User not found`, 404)
+      // check if user account is banned
+      let isBanned = false;
+      const bannedUsers = await BannedUsers.find()
+      bannedUsers.forEach(bannedUser => {
+        if(user._id == bannedUser.user.toString()) {
+          isBanned = true;
+        }
+      })
+      user = {...user._doc, isBanned: isBanned}
       res.status(200).json(user);
   }catch(e){
       next(e);
