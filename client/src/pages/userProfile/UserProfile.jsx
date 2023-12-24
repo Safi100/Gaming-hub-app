@@ -10,10 +10,11 @@ import { AuthContext } from '../../context/AuthContext';
 import {Card} from 'react-bootstrap';
 import './userProfile.css'
 import EditProfile from './EditProfile';
+import BanForm from '../../components/banForm/BanForm';
 
 const UserProfile = () => {
-    const notify = () => {
-        toast("Topic deleted successfully!", {
+    const notify = (title) => {
+        toast(`${title}`, {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -37,7 +38,7 @@ const UserProfile = () => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [openEdit, setOpenEdit] = useState(false);
-    
+    const [openConfirmBan, setOpenConfirmBan] = useState(false);
     // fetch user profile data
     useEffect(() => {
         setOpenEdit(false)
@@ -55,7 +56,7 @@ const UserProfile = () => {
     }, [id])
 
     // following status
-    const isFollower = user.followers?.some(follower => follower._id === currentUser?._id)
+    const isFollower = user.followers?.some(follower => follower == currentUser?._id)
     
     // follow function
     const following_toggle = () => {
@@ -91,11 +92,34 @@ const UserProfile = () => {
                 topics: prevUser.topics.filter((topic) => topic._id !== topicID),
             }));
             // Notify the user about the deletion
-            notify();
+            notify("Topic deleted successfully!");
         })
         .catch(err => console.log(err))
     }
-
+    // remove ban from user
+    const removeBanFromUser = (user) => {
+        Axios.delete(`http://localhost:8000/api/user/ban-user/${user}`)
+        .then(res => {
+            setUser((prevUser) => ({
+                ...prevUser,
+                isBanned: false,
+            }))
+            notify('Banned removed successfully!')
+        })
+        .catch(err => console.log(err))
+    }
+    // Ban user
+    const banUser = (user) => {
+        Axios.post(`http://localhost:8000/api/user/ban-user/${user}`)
+        .then(res => {
+            setUser((prevUser) => ({
+                ...prevUser,
+                isBanned: true,
+            }))
+            notify('user banned successfully!')
+        })
+        .catch(err => console.log(err))
+    }
     return (
         <div className='user_profile'>
             <ToastContainer/>
@@ -126,9 +150,13 @@ const UserProfile = () => {
                         <p>{user.gender}</p>
                         <p>Joined on {new Date(user.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric'})}</p>
                         <div className='buttons'>
-                            { (currentUser && currentUser?._id !== user._id) && ( <>
+                            { (currentUser && currentUser?._id !== user._id) && ( 
+                            <>
                                 <button className='contact' onClick={() => FetchOrCreateConversation(user._id) } ><MessageIcon /> Contact</button>
-                            </> )}
+                                {!user.isAdmin && !user.isBanned && (<button onClick={()=> setOpenConfirmBan(true)} className='btn btn-danger'>Ban user</button>)}
+                                {!user.isAdmin && user.isBanned && (<button onClick={() => removeBanFromUser(user._id)} className='btn btn-light'>Remove ban</button>)}
+                            </> 
+                            )}
                             { (currentUser && currentUser?._id === user._id) && (
                                 <button className='edit_btn' onClick={()=> setOpenEdit(true)}>Edit profile</button>
                             )}
@@ -192,6 +220,10 @@ const UserProfile = () => {
             }
             {currentUser && currentUser?._id === user._id && 
             (openEdit && <EditProfile  user={user} setUser={setUser} setOpenEdit={setOpenEdit} />) }
+            {currentUser && currentUser?.isAdmin && 
+            (openConfirmBan && <BanForm user={user} setUser={setUser} setOpenConfirmBan={setOpenConfirmBan} notify={notify} />)
+            }
+            
         </div>
     );
 }
