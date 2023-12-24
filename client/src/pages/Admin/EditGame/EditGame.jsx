@@ -3,12 +3,10 @@ import { useParams } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import PageLoading from '../../../components/loading/PageLoading';
 import { Row, Col, Form, Button, Spinner } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-toastify/dist/ReactToastify.css';
-import './editGame.css'
 import Axios from 'axios'
 import { AuthContext } from '../../../context/AuthContext';
 import NotAuthorize from '../../../components/redirecting/NotAuthorize';
+import './editGame.css'
 
 const EditGame = () => {
     const authContext = useContext(AuthContext)
