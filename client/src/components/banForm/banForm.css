@@ -1,0 +1,22 @@
+.ban_form{
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 700px;
+    background: #242526;
+}
+.ban_form .textarea{
+    resize: none;
+}
+.ban_form input, .ban_form textarea{
+    background: #3a3b3c;
+    color: #fff !important;
+}
+.ban_form input::placeholder, .ban_form textarea::placeholder{
+    color: #fff !important;
+}
+.ban_form input:focus, .ban_form textarea:focus {
+    background: #3a3b3c !important;
+}
