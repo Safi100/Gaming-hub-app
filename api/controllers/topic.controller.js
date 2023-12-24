@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const cron = require('node-cron');
 const Topic = require('../models/topic.model');
 const User = require('../models/user.model');
 const Game = require('../models/game.model');
