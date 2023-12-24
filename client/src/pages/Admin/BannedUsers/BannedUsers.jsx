@@ -9,17 +9,11 @@ import './bannedUsers.css';
 
 const BannedUsers = () => {
     const authContext = useContext(AuthContext)
-    const [validated, setValidated] = useState(false);
     const [bannedUsers, setBannedUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const [formData, setFormData] = useState({
-        days: "",
-        reason: ""
-    })
-
-    const notify = () => {
-        toast("Game Updated successfully!", {
+    const notify = (title) => {
+        toast(`${title}`, {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -50,6 +44,7 @@ const BannedUsers = () => {
             setBannedUsers(prevBannedUsers => 
                 prevBannedUsers.filter(bannedUser => bannedUser._id !== res.data._id)
             );
+            notify('Banned removed successfully!')
         })
         .catch(err => console.log(err))
     }
@@ -67,7 +62,10 @@ const BannedUsers = () => {
                         <p className='mb-2'><a className='fs-5' href={`/profile/${bannedUser.user._id}`}>{bannedUser.user.first_name} {bannedUser.user.last_name} / {bannedUser.user.email}</a></p>
                         <p>Ban from <span className='text-warning'>{new Date(bannedUser.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' , hour: 'numeric', minute: 'numeric', second: 'numeric'})}</span></p>
                         <p className='mb-2'>to <span className='text-warning'>{bannedUser?.bannedUntil ==  null  ? 'Forever' : new Date(bannedUser?.bannedUntil).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' , hour: 'numeric', minute: 'numeric', second: 'numeric'})}</span></p>
-                        <p className='mb-4'>Ban reason: <br /> {bannedUser.reason}</p>
+                        <div className='mb-4'>
+                            <p>Ban reason:</p>
+                            <p dangerouslySetInnerHTML={{ __html: bannedUser.reason.replace(/\n/g, '<br>') }} />
+                        </div>
                         <form onSubmit={(e) => removeBanFromUser(e, bannedUser.user._id)}>
                             <div className='d-flex gap-2 mb-2'>
                                 <input type="checkbox" id='delete' required />
