@@ -6,6 +6,8 @@ export const  AuthContext = createContext([]);
 
 export function AuthContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null)
+  const [isBanned, setIsBanned] = useState(false);
+  const [banDetails, setBanDetails] = useState({});
   useEffect(() => {
     fetchCurrentUser();
   }, []);
@@ -13,7 +15,10 @@ export function AuthContextProvider({ children }) {
     if (!Cookies.get('c_user')) return;
     axios.get('http://localhost:8000/api/user/currentUser')
       .then((res) => {
-        setCurrentUser(res.data);
+        setCurrentUser(res.data.currentUser);
+        setIsBanned(res.data.isBanned);
+        setBanDetails(res.data.banDetails);
+
       })
       .catch((error) => {
         console.error('Error fetching user data:', error);
@@ -26,7 +31,7 @@ export function AuthContextProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ currentUser, fetchCurrentUser, logout }}>
+    <AuthContext.Provider value={{ currentUser, fetchCurrentUser, logout, isBanned, banDetails }}>
       {children}
     </AuthContext.Provider>
   );
