@@ -139,6 +139,11 @@ function Navbar() {
                   <Link to={'/admin/add-new-giveaway'}>Add New Giveaway</Link>
                 </MenuItem>
                 }
+                { currentUser?.isAdmin &&
+                  <MenuItem onClick={handleCloseNavMenu}>
+                  <Link to={'/admin/banned-users'}>Banned users</Link>
+                </MenuItem>
+                }
                   <MenuItem onClick={handleCloseNavMenu}>
                   <Link to={`/giveaway?page=${1}&gameCategory=`}>Giveaways</Link>
                 </MenuItem>
