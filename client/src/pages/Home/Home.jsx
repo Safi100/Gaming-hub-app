@@ -4,6 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { stringAvatar } from '../../components/avatar';
 import Avatar from '@mui/material/Avatar';
 import './home.css'
+import PageLoading from '../../components/loading/PageLoading';
 
 const Home = () => {
     const authContext = useContext(AuthContext)
@@ -27,8 +28,9 @@ const Home = () => {
     }, [])
 
     return (
+        loading ? <PageLoading /> :
         <div className='wrapper home py-4'>
-            {favoriteGames?.length > 0 && 
+            { authContext.currentUser && favoriteGames?.length > 0 && 
             <div className='mb-5'>
                 <h2 className='fs-1 mb-3'>Favorite Games</h2>
                 <div className="games">
