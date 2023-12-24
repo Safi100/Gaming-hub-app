@@ -1,0 +1,10 @@
+.users_banned{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.users_banned .banned_card{
+    background: #242526;
+    padding: 20px;
+    border-radius: 5px;
+}
