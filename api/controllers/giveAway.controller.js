@@ -7,6 +7,7 @@ const cron = require('node-cron');
 
 module.exports.NewGiveAway = async (req, res, next) => {
     try{
+        const io = req.app.get('socketio');
         const {heading, body, game, max_participants, winner_announcement_date} = req.body
         const choosenDate = new Date(winner_announcement_date);
         // Get the current date and set time to midnight for date-only comparison
@@ -185,16 +186,15 @@ module.exports.myGiveaways = async (req, res, next) => {
 }
 
 // Schedule a job to run every hour (at the beginning of each hour)
-cron.schedule('0 * * * *', async (req, res, next) => {
-    const io = req.app.get('socketio');
-    const todayDate = new Date();
+cron.schedule('* * * * *', async (req, res, next) => {
     try {
+    const todayDate = new Date();
         // Find giveaways where the winner announcement date has passed and no winner is selected
         const giveaways = await Giveaway.find({
             winner_announcement_date: { $lte: todayDate },
             $or: [{ winner: { $exists: false } }, { winner: null }]
         });
-
+        console.log(giveaways);
         giveaways.forEach(async (giveaway) => {
             if (giveaway.participants && giveaway.participants.length > 0) {
                 // Randomly select a winner
@@ -202,24 +202,20 @@ cron.schedule('0 * * * *', async (req, res, next) => {
                 const selectedWinner = giveaway.participants[randomIndex];
                 // Update the giveaway with the selected winner
                 giveaway.winner = selectedWinner;
-                console.log(selectedWinner);
                 const user = await User.findById(selectedWinner)
                 // send a notification to the user
-                const notification = {
+                user.notifications.push({
                     about: "giveaway",
                     content_id: giveaway._id,
                     body: "Congratulations, you won a giveaway!",
                     date: new Date()
-                }
-                user.notifications.push({
-                    notification
                 })
-                io.emit('sendNotification', {userID: user._id, notification: notification});
                 await user.save();
                 await giveaway.save();
             }
         });
     } catch (e) {
+        console.log(e);
         next(e);
     }
 });
