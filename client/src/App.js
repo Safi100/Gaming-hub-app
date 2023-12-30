@@ -36,14 +36,14 @@ axios.defaults.withCredentials = true;
 function App() {
   const location = useLocation();
   const [showNavbar, setShowNavbar] = useState(true);
-  
+
+  const excludedPaths = ['/login', '/register', '/chat', '/forgot-password', '/reset-password', '/verify-email', '/verify-email'];
+
   useEffect(() => {
     // Hide Navbar on Login and Register routes
-    if (location.pathname.includes('/login') || location.pathname.includes('/register') || location.pathname.includes('/chat')) {
-      setShowNavbar(false);
-    } else {
-      setShowNavbar(true);
-    }
+    const shouldShowNavbar = !excludedPaths.some((path) => location.pathname.includes(path));
+    setShowNavbar(shouldShowNavbar);
+
   }, [location]);
 
   const authContext = useContext(AuthContext)
