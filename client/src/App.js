@@ -6,6 +6,7 @@ import Navbar from './components/navbar/Navbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 // pages
 const Home = lazy(() => import('./pages/Home/Home'));
 const Register = lazy(() => import('./pages/Auth/Register'));
@@ -30,6 +31,7 @@ const NoitficationPage = lazy(() => import('./pages/notifications/Notifications'
 const HelpPage = lazy(() => import('./pages/help/Help'));
 const BannedPage = lazy(() => import('./components/redirecting/bannedUsers'));
 const BannedUsersPage = lazy(() => import('./pages/Admin/BannedUsers/BannedUsers'));
+const NotFoundPage = lazy(() => import('./pages/NotFound/NotFound'));
 
 axios.defaults.withCredentials = true;
 
@@ -91,7 +93,7 @@ function App() {
           <Route path="/topic/:id/edit" element={<EditTopic />} /> {/* protected route... */}
           <Route path="/reset-password/:id/:token" element={<ResetPassword />} /> 
           <Route path="/verify-email/:id/:token" element={<EmailVerify />} />
-          <Route path='*' element={<p>There's nothing here: 404!</p>} />  {/* Not found page... */}
+          <Route path='*' element={ <NotFoundPage />} />  {/* Not found page... */}
         </Routes>
     </Suspense>
   </>
