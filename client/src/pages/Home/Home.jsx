@@ -30,6 +30,7 @@ const Home = () => {
     return (
         loading ? <PageLoading /> :
         <div className='wrapper home py-4'>
+            <h2 className='mb-4'>Welcome to keeplay platform, have fun</h2>
             { authContext.currentUser && favoriteGames?.length > 0 && 
             <div className='mb-5'>
                 <h2 className='fs-1 mb-3'>Favorite Games</h2>
