@@ -90,7 +90,6 @@ module.exports.fetchGiveAways = async (req, res, next) => {
         const today = new Date();
         query.winner_announcement_date = { $gte: today }
         const {gameCategory} = req.query || '';
-        console.log(gameCategory);
         if (gameCategory) query.game = gameCategory; // filter giveaways using game category
         query.winner = null // fetch giveaways that don't have a winner yet.
         const GiveawaysCount = await Giveaway.countDocuments(query) // number of all giveaway that fetched
@@ -194,7 +193,6 @@ cron.schedule('* * * * *', async (req, res, next) => {
             winner_announcement_date: { $lte: todayDate },
             $or: [{ winner: { $exists: false } }, { winner: null }]
         });
-        console.log(giveaways);
         giveaways.forEach(async (giveaway) => {
             if (giveaway.participants && giveaway.participants.length > 0) {
                 // Randomly select a winner

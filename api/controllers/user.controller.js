@@ -154,7 +154,6 @@ module.exports.removeProfilePicture = async (req, res, next) => {
 }
 module.exports.changePassword = async (req, res, next) => {
   try{
-    console.log(req.body);
     let {current_password, new_password, confirm_password} = req.body;
     current_password = current_password.trim();
     new_password = new_password.trim();
