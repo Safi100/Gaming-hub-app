@@ -185,7 +185,7 @@ module.exports.myGiveaways = async (req, res, next) => {
 }
 
 // Schedule a job to run every hour (at the beginning of each hour)
-cron.schedule('* * * * *', async (req, res, next) => {
+cron.schedule('0 * * * *', async (req, res, next) => {
     try {
     const todayDate = new Date();
         // Find giveaways where the winner announcement date has passed and no winner is selected
