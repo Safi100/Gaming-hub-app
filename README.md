@@ -6,14 +6,14 @@ to run this project you need after register to switch isAdmin to true on mongo D
 
 # env file:
 
-BASE_URL=http://localhost:3000/
-JWT_SECRET=1dkg141h2415bhdsh12b3l4ngdlfgnl1415mvsfnsdf/
-CRYPTO_KEY=thisiscryptosecretkey/
+BASE_URL=http://localhost:3000\
+JWT_SECRET=1dkg141h2415bhdsh12b3l4ngdlfgnl1415mvsfnsdf\
+CRYPTO_KEY=thisiscryptosecretkey\
 
-EMAIL_USER=/
-PASS_USER=/
+EMAIL_USER=\
+PASS_USER=\
 
-CLOUDINARY_CLOUD_NAME=/
-CLOUDINARY_KEY=/
-CLOUDINARY_SECRET=/
-MONGO_URL=/
+CLOUDINARY_CLOUD_NAME=\
+CLOUDINARY_KEY=\
+CLOUDINARY_SECRET=\
+MONGO_URL=\
