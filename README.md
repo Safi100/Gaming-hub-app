@@ -6,7 +6,7 @@ to run this project you need after register to switch isAdmin to true on mongo D
 
 env file:
 
-BASE_URL=http://localhost:3000
+BASE_URL=http://localhost:3000\n
 JWT_SECRET=1dkg141h2415bhdsh12b3l4ngdlfgnl1415mvsfnsdf
 CRYPTO_KEY=thisiscryptosecretkey
 # nodemailer
