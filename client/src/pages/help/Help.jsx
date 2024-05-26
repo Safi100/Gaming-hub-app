@@ -6,7 +6,7 @@ const Help = () => {
         <div className='wrapper help py-3'>
             <h2 className='mb-3'>How to use website</h2>
             <div>
-                <h3>Regsiter</h3>
+                <h3>Register</h3>
                 <ul className='px-4'>
                     <li>After register with unique email you will recieve a verification link on your email - check spam folder.</li>
                     <li>Your account will be deleted after 24 hours if you don't verify it.</li>
